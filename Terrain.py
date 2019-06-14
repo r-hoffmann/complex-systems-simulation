@@ -40,9 +40,17 @@ class TerrainBlock(object):
         self.height_of_water = parameters['height_of_water']
         self.concentration_of_nutrients = parameters['concentration_of_nutrients']
         self.peat_bog_thickness = parameters['peat_bog_thickness']
+    
+    def content_to_neighboring_cell(self, f):
+        p = 0
+        for i in range(m-1):
+            sum_f += f[i]
+        return p
 
     def neighbours(self):
         for n_i in [self.i-1, self.i, self.i+1]:
             for n_j in [self.j-1, self.j, self.j+1]:
                 if n_i!=n_j and self.terrain.width>n_i>0 and self.terrain.height>n_j>0:
                     yield [n_i, n_j]
+    def sum_content_neighboring_cell(self, q, f):
+        q_prime = q + f
