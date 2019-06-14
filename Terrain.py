@@ -11,10 +11,10 @@ class Terrain(object):
     def generate_terrain(self):
         self.terrain = []
         print(self.height, self.width)
-        for _ in range(self.height):
+        for y in range(self.height):
             line = []
-            for _ in range(self.width):
-                terrain_block = TerrainBlock(self.parameters)
+            for x in range(self.width):
+                terrain_block = TerrainBlock(x, y, self, self.parameters)
                 line.append(terrain_block)
             self.terrain.append(line)
     
@@ -25,7 +25,7 @@ class Terrain(object):
 
 
 class TerrainBlock(object):
-    def __init__(self, parameters):
+    def __init__(self, i, j, terrain, parameters):
         """
             parameters should be a dict with keys:
                 height_of_terrain
@@ -33,7 +33,16 @@ class TerrainBlock(object):
                 concentration_of_nutrients
                 peat_bog_thickness
         """
+        self.i = i
+        self.j = j
+        self.terrain = terrain
         self.height_of_terrain = parameters['height_of_terrain']
         self.height_of_water = parameters['height_of_water']
         self.concentration_of_nutrients = parameters['concentration_of_nutrients']
         self.peat_bog_thickness = parameters['peat_bog_thickness']
+
+    def neighbours(self):
+        for n_i in [self.i-1, self.i, self.i+1]:
+            for n_j in [self.j-1, self.j, self.j+1]:
+                if n_i!=n_j and self.terrain.width>n_i>0 and self.terrain.height>n_j>0:
+                    yield [n_i, n_j]

@@ -1,7 +1,15 @@
 from Terrain import Terrain
 
 class Model(object):
-    def __init__(self, height=None, width=None, parameters=None):
+    def __init__(self, height=None, width=None, gamma=None, rho=None, mu=None, parameters=None):
+        """
+            gamma: gradient of nutrient distribution
+            rho: peat bog vertical growth rate
+            mu: sedimentation rate
+        """
+        self.gamma = gamma
+        self.rho = rho
+        self.mu = mu
         self.terrain = Terrain(height, width, parameters)
     
     def run(self):
@@ -24,7 +32,11 @@ class Model(object):
             if cell.height_of_water > 0:
                 cell.concentration_of_nutrients = 1
             else:
-                cell.concentration_of_nutrients = max([1])
+                cell.concentration_of_nutrients = max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
 
     def calculate_peat_growth(self):
-        raise NotImplementedError()
+        for cell in self.terrain.cells():
+            if cell.height_of_water > 0:
+                cell.peat_bog_thickness = self.mu * cell.concentration_of_nutrients
+            else:
+                cell.peat_bog_thickness = self.rho * cell.concentration_of_nutrients
