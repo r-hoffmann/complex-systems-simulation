@@ -35,13 +35,8 @@ class Model(object):
                 cell.concentration_of_nutrients = max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
 
     def calculate_peat_growth(self):
-<<<<<<< Updated upstream
         for cell in self.terrain.cells():
             if cell.height_of_water > 0:
                 cell.peat_bog_thickness = self.mu * cell.concentration_of_nutrients
             else:
                 cell.peat_bog_thickness = self.rho * cell.concentration_of_nutrients
-=======
-        raise NotImplementedError()
-
->>>>>>> Stashed changes
