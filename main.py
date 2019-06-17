@@ -9,4 +9,12 @@ if __name__ == "__main__":
     parameters = read_json()
 
     model = Model(parameters)
-    model.step()
+    # model.step()
+
+    # for cell in model.terrain.cells():
+    #     print(cell)
+    #     for n in cell.neighbours():
+    #         print(n)
+    #     print()
+
+    model.timestep()

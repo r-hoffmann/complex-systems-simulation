@@ -9,12 +9,12 @@
         [
             {
                 "height_of_terrain": 1,
-                "height_of_water": 1,
+                "height_of_water": 10,
                 "concentration_of_nutrients": 0.1,
                 "peat_bog_thickness": 1
             },
             {
-                "height_of_terrain": 1,
+                "height_of_terrain": 100,
                 "height_of_water": 1,
                 "concentration_of_nutrients": 0.1,
                 "peat_bog_thickness": 1
