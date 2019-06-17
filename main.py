@@ -22,4 +22,4 @@ if __name__ == "__main__":
             if cell.height_of_water > 0:
                 print(cell)
         print()
-        model.timestep()
+        model.run()

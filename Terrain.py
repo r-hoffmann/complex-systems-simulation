@@ -25,10 +25,10 @@ class Terrain(object):
     
     def generate_terrain(self):
         self.terrain = []
-        for i, cell_line_parameters in enumerate(self.parameters['cells']):
+        for x, cell_line_parameters in enumerate(self.parameters['cells']):
             line = []
-            for j, cell_parameters in enumerate(cell_line_parameters):
-                terrain_block = TerrainBlock(i, j, self, cell_parameters)
+            for y, cell_parameters in enumerate(cell_line_parameters):
+                terrain_block = TerrainBlock(x, y, self, cell_parameters)
                 line.append(terrain_block)
             self.terrain.append(line)
         assert self.width * self.height == len(self.terrain) * len(self.terrain[0]), "Width and height do no correspond to given cell parameters {}x{}!={}x{}".format(self.width, self.height, len(self.terrain), len(self.terrain[0]))
@@ -41,13 +41,22 @@ class Terrain(object):
     def get_cell(self, x, y):
         return self.terrain[x][y]
 
+    def get_summary(self):
+        summary = []
+        for line in self.terrain:
+            summary_line = []
+            for cell in line:
+                summary_line.append(cell.get_summary())
+            summary.append(summary_line)
+        return summary
+
     def copy(self):
         new_terrain = Terrain(self.parameters, False)
         new_terrain.terrain = copy.deepcopy(self.terrain)
         return new_terrain
 
 class TerrainBlock(object):
-    def __init__(self, i, j, terrain, parameters):
+    def __init__(self, x, y, terrain, parameters):
         """
             parameters should be a dict with keys:
                 height_of_terrain
@@ -55,8 +64,8 @@ class TerrainBlock(object):
                 concentration_of_nutrients
                 peat_bog_thickness
         """
-        self.i = i
-        self.j = j
+        self.x = x
+        self.y = y
         self.terrain = terrain
         self.height_of_terrain = parameters['height_of_terrain']
         self.height_of_water = parameters['height_of_water']
@@ -65,14 +74,14 @@ class TerrainBlock(object):
         
     def neighbours(self):
         neighbours = []
-        if self.i > 0:
-            neighbours.append(self.terrain.get_cell(self.i - 1, self.j))
-        if self.j > 0:
-            neighbours.append(self.terrain.get_cell(self.i, self.j - 1))
-        if self.terrain.width > self.i + 1:
-            neighbours.append(self.terrain.get_cell(self.i + 1, self.j))
-        if self.terrain.height > self.j + 1:
-            neighbours.append(self.terrain.get_cell(self.i, self.j + 1))
+        if self.x > 0:
+            neighbours.append(self.terrain.get_cell(self.x - 1, self.y))
+        if self.y > 0:
+            neighbours.append(self.terrain.get_cell(self.x, self.y - 1))
+        if self.terrain.width > self.x + 1:
+            neighbours.append(self.terrain.get_cell(self.x + 1, self.y))
+        if self.terrain.height > self.y + 1:
+            neighbours.append(self.terrain.get_cell(self.x, self.y + 1))
         return neighbours
 
     @property
@@ -144,10 +153,20 @@ class TerrainBlock(object):
                 })
         return water_flow
 
+    def get_summary(self):
+        return {
+                    "x": self.x,
+                    "y": self.y,
+                    "height_of_terrain": self.height_of_terrain,
+                    "height_of_water": self.height_of_water,
+                    "concentration_of_nutrients": self.concentration_of_nutrients,
+                    "peat_bog_thickness": self.peat_bog_thickness
+                }
+
     def __str__(self):
         return "({},{}): {} {} {} {}".format(
-            self.i,
-            self.j,
+            self.x,
+            self.y,
             self.height_of_terrain,
             self.height_of_water,
             self.concentration_of_nutrients,
@@ -155,6 +174,6 @@ class TerrainBlock(object):
     
     def __repr__(self):
         return "({},{})".format(
-            self.i,
-            self.j)
+            self.x,
+            self.y)
 

@@ -1,3 +1,4 @@
+import json
 from Terrain import Terrain
 
 class Model(object):
@@ -22,15 +23,22 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.terrain = Terrain(parameters)
     
-    def run(self):
-        print('test')
+    def run(self, timesteps=10, dump_to_file=True):
+        terrain_timeline = [self.terrain.get_summary()]
+        for i in range(timesteps):
+            self.timestep()
+            terrain_timeline.append(self.terrain.get_summary())
+
+        summary = self.get_summary(terrain_timeline)
+        if dump_to_file:
+            with open('output.json', 'w') as file:
+                json.dump(summary, file)
+        return terrain_timeline
 
     def step(self):
         print('step')
 
     def timestep(self):
-        print('timestep')
-
         # Directly from paper
         self.calculate_flows()
         self.calculate_nutrient_dist()
@@ -65,3 +73,15 @@ class Model(object):
                 cell.peat_bog_thickness = self.mu * cell.concentration_of_nutrients
             else:
                 cell.peat_bog_thickness = self.rho * cell.concentration_of_nutrients
+
+    def get_summary(self, terrain_timeline):
+        self.gamma = self.parameters['gamma']
+        self.rho = self.parameters['rho']
+        self.mu = self.parameters['mu']
+        return {
+            'gamma': self.gamma,
+            'rho': self.rho,
+            'mu': self.mu,
+            'terrain_timeline': terrain_timeline
+        }
+        
