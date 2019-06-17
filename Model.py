@@ -36,7 +36,7 @@ class Model(object):
 
         summary = self.get_summary(terrain_timeline)
         if dump_to_file:
-            with open('output.json', 'w') as file:
+            with open('output_100x100_smallPool.json', 'w') as file:
                 print("Output to output.json")
                 json.dump(summary, file)
         return terrain_timeline

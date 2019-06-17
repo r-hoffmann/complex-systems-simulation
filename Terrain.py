@@ -1,4 +1,6 @@
 import copy
+from numpy.random import normal
+import numpy as np
 
 class Terrain(object):
     def __init__(self, parameters=None, original=True):
@@ -69,10 +71,15 @@ class TerrainBlock(object):
         self.x = x
         self.y = y
         self.terrain = terrain
-        self.height_of_terrain = parameters['height_of_terrain']
+        # self.height_of_terrain = parameters['height_of_terrain']
+        # print(normal(10,6))
+        self.height_of_terrain = np.abs(normal(1,9))
+
         self.height_of_water = parameters['height_of_water']
         self.concentration_of_nutrients = parameters['concentration_of_nutrients']
-        self.peat_bog_thickness = parameters['peat_bog_thickness']
+        # self.peat_bog_thickness = parameters['peat_bog_thickness']
+        self.peat_bog_thickness = np.abs(normal(1,3)
+)
         
     def neighbours(self):
         for n_x in [self.x - 1, self.x, self.x + 1]:

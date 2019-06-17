@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib as mpl
 
-def load_data(filename='output.json'):
+def load_data(filename='output_100x100_smallPool.json'):
     with open('output.json') as json_file:  
         return json.load(json_file)
 
@@ -24,23 +24,24 @@ with open('output_100x100_smallPool.json') as json_file:
         for row in timestep:
             line = []
             for cell in row:
-                # if(cell['height_of_water'] > 0 ):
-                #     line.append(1)
-                # else:
-                #     line.append(0)
-                line.append(cell['height_of_water'])
+                if(cell['height_of_water'] > 0 ):
+                    line.append(-1*cell['height_of_water'])
+                else:
+                    line.append(cell['height_of_terrain']+cell['peat_bog_thickness'])
+                # line.append(cell['height_of_water'])
             water_height.append(line)
+            # print(line)
         water_height = np.array(water_height)
         # make a color map of fixed colors
-        cmap = mpl.colors.ListedColormap(['green','cyan','blue','darkblue'])
-        bounds=[-1,0.01,1,5,10]
+        cmap = mpl.colors.ListedColormap(['#023858', '#045a8d', '#3690c0', '#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#b30000','#7f0000'])
+        bounds=[-6, -4,-2, 0, 2, 4, 6,8,10,12,14,16]
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
         # tell imshow about color map so that only set colors are used
         img = plt.imshow(water_height,interpolation='nearest', cmap = cmap,norm=norm)
 
         # make a color bar
-        plt.colorbar(img,cmap=cmap, norm=norm,boundaries=bounds,ticks=[-5,0,5])
+        plt.colorbar(img,cmap=cmap, norm=norm,boundaries=bounds,ticks=bounds)
 
         plt.show()
 

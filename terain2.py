@@ -40,7 +40,7 @@ class Grid(object):
 class FractalHeightmap(object):
     '''populates a 'grid' with a fractal heightmap'''
     def __init__(self,grid,rng_seed,roughness,
-                 corner_seeds=[(0,100),(0,100),(0,100),(0,100)],
+                 corner_seeds=[(0,0),(100,100),(0,0),(100,100)],
                  max_depth=3):
         self.grid=grid
         self.max_depth=max_depth
