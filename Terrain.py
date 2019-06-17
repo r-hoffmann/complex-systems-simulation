@@ -88,45 +88,6 @@ class TerrainBlock(object):
     def non_dispersible_height(self):
         return self.height_of_terrain + self.peat_bog_thickness
 
-    def get_water_flow_paper(self, cells_receiving_water=None):
-        # litterally the algorithm in the paper
-        neighbours = self.neighbours()
-        m = len(neighbours)
-        eliminated = []
-        for i in range(0, m):
-            eliminated.append(False)
-        
-        new_control = True
-        while new_control:
-            new_control = False
-            q_sum = self.height_of_water
-            count = 0
-            for i in range(0, m):
-                if not eliminated[i]:
-                    q_sum += neighbours[i].total_height
-                    count += 1
-            average = q_sum / count
-            for i in range(0, m):
-                if neighbours[i].total_height > average and not eliminated[i]:
-                    new_control = True
-                    eliminated[i] = True
-        f = []
-        print('next')
-        for i in range(0, m):
-            if eliminated[i]:
-                f.append(0)
-            f.append(max(0, average - neighbours[i].total_height))
-
-        # end of algorithm in paper
-        water_flow = []
-        for i in range(0, m):
-            water_flow.append({
-                'from': self,
-                'to': neighbours[i],
-                'water': f[i]
-            })
-        return water_flow
-
     def get_water_flow(self, cells_receiving_water=None):
         # uses notation from paper
         if cells_receiving_water==None:
