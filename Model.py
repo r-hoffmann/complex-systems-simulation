@@ -24,22 +24,29 @@ class Model(object):
         self.terrain = Terrain(parameters)
     
     def run(self, timesteps=10, dump_to_file=True):
-        self.water_out = [0]
-        terrain_timeline = [self.terrain.get_summary()]
+        self.water_out = []
+        self.water_in = []
+        self.total_peat = [self.get_total_peat()]
+        self.terrain_timeline = [self.terrain.get_summary()]
         for t in range(timesteps):
-            print("Timestep {}".format(t+1))
             self.current_water_out = 0
-            self.timestep()
-            self.water_out.append(self.current_water_out - self.water_out[-1])
-            print("Water out this step: {}".format(self.current_water_out))
-            terrain_timeline.append(self.terrain.get_summary())
+            self.current_water_in = 0
 
-        summary = self.get_summary(terrain_timeline)
+            print("Timestep {}".format(t+1))
+            self.timestep()
+
+            # statistics
+            self.water_out.append(self.current_water_out)
+            self.water_in.append(self.current_water_in)
+            self.total_peat.append(self.get_total_peat())
+            self.terrain_timeline.append(self.terrain.get_summary())
+
+        summary = self.get_summary()
         if dump_to_file:
             with open('output.json', 'w') as file:
                 print("Output to output.json")
                 json.dump(summary, file)
-        return terrain_timeline
+        return summary
 
     def timestep(self):
         # Directly from paper
@@ -85,6 +92,8 @@ class Model(object):
             if mutation['water'] > 0:
                 if mutation['from'] != None:
                     mutation['from'].height_of_water -= mutation['water']
+                else:
+                    self.current_water_in += mutation['water']
                 if mutation['to'] != None:
                     mutation['to'].height_of_water += mutation['water']
                     if mutation['to'].y > max_depth:
@@ -108,18 +117,30 @@ class Model(object):
     def calculate_peat_growth(self):
         for cell in self.terrain.cells():
             if cell.height_of_water > 0:
-                cell.peat_bog_thickness = self.mu * cell.concentration_of_nutrients
+                cell.peat_bog_thickness += self.mu * cell.concentration_of_nutrients
             else:
-                cell.peat_bog_thickness = self.rho * cell.concentration_of_nutrients
+                cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 
-    def get_summary(self, terrain_timeline):
+    def get_total_peat(self):
+        total_peat = 0
+        for cell in self.terrain.cells():
+            total_peat += cell.peat_bog_thickness
+        return total_peat
+
+    def get_summary(self):
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
+        print(self.total_peat)
+        print(self.water_in)
+        print(self.water_out)
         return {
             'gamma': self.gamma,
             'rho': self.rho,
             'mu': self.mu,
-            'terrain_timeline': terrain_timeline
+            'peat_timeline': self.total_peat,
+            'water_in_timeline': self.water_in,
+            'water_out_timeline': self.water_out,
+            'terrain_timeline': self.terrain_timeline
         }
         
