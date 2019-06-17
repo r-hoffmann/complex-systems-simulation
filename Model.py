@@ -23,7 +23,7 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.terrain = Terrain(parameters)
     
-    def run(self, timesteps=10**3, dump_to_file=True):
+    def run(self, timesteps=10, dump_to_file=True):
         terrain_timeline = [self.terrain.get_summary()]
         for t in range(timesteps):
             print("Timestep {}".format(t+1))
@@ -51,7 +51,7 @@ class Model(object):
     def supply_water(self):
         # @todo: Make some kind of distribution?
         for cell in self.terrain.terrain[0]:
-            cell.height_of_water += 10
+            cell.height_of_water += 1
 
     def remove_water(self):
         # @todo: Remove all water from last row?
@@ -77,16 +77,16 @@ class Model(object):
     def calculate_nutrient_dist(self):
         for cell in self.terrain.cells():
             if cell.height_of_water > 0:
-                cell.concentration_of_nutrients = 1
+                cell.concentration_of_nutrients += 1
             else:
-                cell.concentration_of_nutrients = max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
+                cell.concentration_of_nutrients += max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
 
     def calculate_peat_growth(self):
         for cell in self.terrain.cells():
             if cell.height_of_water > 0:
-                cell.peat_bog_thickness = self.mu * cell.concentration_of_nutrients
+                cell.peat_bog_thickness += self.mu * cell.concentration_of_nutrients
             else:
-                cell.peat_bog_thickness = self.rho * cell.concentration_of_nutrients
+                cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 
     def get_summary(self, terrain_timeline):
         self.gamma = self.parameters['gamma']

@@ -6,14 +6,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib as mpl
 
+def load_data(filename='output.json'):
+    with open('output.json') as json_file:  
+        return json.load(json_file)
 
-x = np.arange(0, 10, 1)
-y = np.arange(0, 10, 1)
+def plot_heatmap():
+    data = load_data()
 
-print(x)
-xx, yy = np.meshgrid(x, y, sparse=True)
-# z = np.sin(xx**2 + yy**2) / (xx**2 + yy**2)
-
+    x = np.arange(0, 10, 1)
+    y = np.arange(0, 10, 1)
 
 with open('output_100x100_smallPool.json') as json_file:  
     data = json.load(json_file)
@@ -43,6 +44,16 @@ with open('output_100x100_smallPool.json') as json_file:
 
         plt.show()
 
-# figs = list(map(plt.figure, plt.get_fignums()))
-# print(figs)
+def plot_hist_water():
+    data = load_data()
+    for timestep in data['terrain_timeline']:
+        water_heights = []
+        for row in timestep[0:2]:
+            for cell in row:
+                water_heights.append(cell['height_of_water'])
+        plt.hist(water_heights, density=True)
+        print(min(water_heights), max(water_heights))
+        plt.show()
 
+if __name__ == "__main__":
+    plot_hist_water()
