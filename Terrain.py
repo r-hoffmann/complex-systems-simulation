@@ -42,6 +42,7 @@ class Terrain(object):
         return self.terrain[x][y]
 
     def get_summary(self):
+        # @todo: normalize these values?
         summary = []
         for line in self.terrain:
             summary_line = []

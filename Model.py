@@ -42,9 +42,21 @@ class Model(object):
 
     def timestep(self):
         # Directly from paper
+        self.supply_water()
+        self.remove_water()
         self.calculate_flows()
         self.calculate_nutrient_dist()
         self.calculate_peat_growth()
+
+    def supply_water(self):
+        # @todo: Make some kind of distribution?
+        for cell in self.terrain.terrain[0]:
+            cell.height_of_water += 10
+
+    def remove_water(self):
+        # @todo: Remove all water from last row?
+        for cell in self.terrain.terrain[-1]:
+            cell.height_of_water = 0
 
     def calculate_flows(self):
         # mutations is the collection of f[i] in the paper
