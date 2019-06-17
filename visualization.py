@@ -20,7 +20,7 @@ with open('output_100x100_smallPool.json') as json_file:
     data = json.load(json_file)
     for timestep in data['terrain_timeline']:
         fig = plt.figure()
-        zz = []
+        water_height = []
         for row in timestep:
             line = []
             for cell in row:
@@ -29,15 +29,15 @@ with open('output_100x100_smallPool.json') as json_file:
                 # else:
                 #     line.append(0)
                 line.append(cell['height_of_water'])
-            zz.append(line)
-        zz = np.array(zz)
+            water_height.append(line)
+        water_height = np.array(water_height)
         # make a color map of fixed colors
         cmap = mpl.colors.ListedColormap(['green','cyan','blue','darkblue'])
         bounds=[-1,0.01,1,5,10]
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
         # tell imshow about color map so that only set colors are used
-        img = plt.imshow(zz,interpolation='nearest', cmap = cmap,norm=norm)
+        img = plt.imshow(water_height,interpolation='nearest', cmap = cmap,norm=norm)
 
         # make a color bar
         plt.colorbar(img,cmap=cmap, norm=norm,boundaries=bounds,ticks=[-5,0,5])
