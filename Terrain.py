@@ -25,9 +25,9 @@ class Terrain(object):
     
     def generate_terrain(self):
         self.terrain = []
-        for x, cell_line_parameters in enumerate(self.parameters['cells']):
+        for y, cell_line_parameters in enumerate(self.parameters['cells']):
             line = []
-            for y, cell_parameters in enumerate(cell_line_parameters):
+            for x, cell_parameters in enumerate(cell_line_parameters):
                 terrain_block = TerrainBlock(x, y, self, cell_parameters)
                 line.append(terrain_block)
             self.terrain.append(line)
@@ -39,7 +39,8 @@ class Terrain(object):
                 yield cell
 
     def get_cell(self, x, y):
-        return self.terrain[x][y]
+        # assert x == self.terrain[y][x].x and y == self.terrain[y][x].y,"Flipped x and y."
+        return self.terrain[y][x]
 
     def get_summary(self):
         # @todo: normalize these values?
@@ -74,9 +75,9 @@ class TerrainBlock(object):
         self.peat_bog_thickness = parameters['peat_bog_thickness']
         
     def neighbours(self):
-        for n_x in [self.x-1, self.x, self.x+1]:
-            for n_y in [self.y-1, self.y, self.y+1]:
-                if not (n_x==self.x and n_y==self.y) and self.terrain.width>n_x>=0 and self.terrain.height>n_y>=0:
+        for n_x in [self.x - 1, self.x, self.x + 1]:
+            for n_y in [self.y - 1, self.y, self.y + 1]:
+                if (not (n_x==self.x and n_y==self.y)) and self.terrain.width>n_x>=0 and self.terrain.height>n_y>=0:
                     yield self.terrain.get_cell(n_x, n_y)
 
     @property
@@ -137,7 +138,7 @@ class TerrainBlock(object):
             if cell!=self and cell.total_height > average:
                 cells_receiving_water.remove(cell)
                 return self.get_water_flow(cells_receiving_water)
-                
+
         water_flow = []
         for cell in cells_receiving_water:
             if self != cell:
