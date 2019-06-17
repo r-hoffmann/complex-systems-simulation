@@ -15,9 +15,9 @@ xx, yy = np.meshgrid(x, y, sparse=True)
 # z = np.sin(xx**2 + yy**2) / (xx**2 + yy**2)
 
 
-with open('output.json') as json_file:  
+with open('output_100x100.json') as json_file:  
     data = json.load(json_file)
-    for timestep in data['terrain_timeline'][0:100]:
+    for timestep in data['terrain_timeline']:
         fig = plt.figure()
         zz = []
         for row in timestep:
