@@ -1,0 +1,38 @@
+{
+    "height": 2,
+    "width": 2,
+    "slope": 0.05,
+    "gamma": 0.02,
+    "rho": 0.0002,
+    "mu": 0.00014,
+    "cells": [
+        [
+            {
+                "height_of_terrain": 1,
+                "height_of_water": 1,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 1
+            },
+            {
+                "height_of_terrain": 1,
+                "height_of_water": 1,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 1
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 1,
+                "height_of_water": 1,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 1
+            },
+            {
+                "height_of_terrain": 1,
+                "height_of_water": 1,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 1
+            }
+        ]
+    ]
+}

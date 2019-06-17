@@ -1,20 +1,31 @@
 class Terrain(object):
-    def __init__(self, height=None, width=None, parameters=None):
+    def __init__(self, parameters=None):
         """
-            @todo: parameters pre-defined or generated on the run with some hyperparameters? i.e. distributions with certain characteristics?
+            dict parameters should contain the following keys:
+                height (int)
+                width (int)
+                slope (float)
+                gamma (float)
+                rho (float)
+                mu (float)
+                cells (list of lists of dict containing the keys:
+                    height_of_terrain
+                    height_of_water
+                    concentration_of_nutrients
+                    peat_bog_thickness)
         """
-        self.height = height
-        self.width = width
         self.parameters = parameters
+        self.height = self.parameters['height']
+        self.width = self.parameters['width']
+        self.slope = self.parameters['slope']
         self.generate_terrain()
     
     def generate_terrain(self):
         self.terrain = []
-        print(self.height, self.width)
-        for y in range(self.height):
+        for i, line in enumerate(self.parameters['cells']):
             line = []
-            for x in range(self.width):
-                terrain_block = TerrainBlock(x, y, self, self.parameters)
+            for j, cell_parameters in enumerate(line):
+                terrain_block = TerrainBlock(i, j, self, cell_parameters)
                 line.append(terrain_block)
             self.terrain.append(line)
     

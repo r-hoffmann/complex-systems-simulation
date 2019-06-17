@@ -1,16 +1,26 @@
 from Terrain import Terrain
 
 class Model(object):
-    def __init__(self, height=None, width=None, gamma=None, rho=None, mu=None, parameters=None):
+    def __init__(self, parameters=None):
         """
-            gamma: gradient of nutrient distribution
-            rho: peat bog vertical growth rate
-            mu: sedimentation rate
+            dict parameters should contain the following keys:
+                height (int)
+                width (int)
+                slope (float)
+                gamma (float)
+                rho (float)
+                mu (float)
+                cells (list of lists of dict containing the keys:
+                    height_of_terrain
+                    height_of_water
+                    concentration_of_nutrients
+                    peat_bog_thickness)
         """
-        self.gamma = gamma
-        self.rho = rho
-        self.mu = mu
-        self.terrain = Terrain(height, width, parameters)
+        self.parameters = parameters
+        self.gamma = self.parameters['gamma']
+        self.rho = self.parameters['rho']
+        self.mu = self.parameters['mu']
+        self.terrain = Terrain(parameters)
     
     def run(self):
         print('test')
