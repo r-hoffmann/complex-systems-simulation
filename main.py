@@ -17,4 +17,4 @@ if __name__ == "__main__":
     #         print(n)
     #     print()
     
-    model.run(30)
+    model.run(200)
