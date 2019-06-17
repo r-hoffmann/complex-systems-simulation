@@ -30,20 +30,27 @@ class Model(object):
 
     def timestep(self):
         print('timestep')
-        self.new_terrain = self.terrain.copy()
 
         # Directly from paper
         self.calculate_flows()
         self.calculate_nutrient_dist()
         self.calculate_peat_growth()
 
-        self.terrain = self.new_terrain
-
     def calculate_flows(self):
-        for cell, new_cell in zip(self.terrain.cells(), self.new_terrain.cells()):
-            new_water_level = cell.get_new_waterlevel()
-            new_cell.height_of_water = max(0, new_water_level - (new_cell.height_of_terrain + new_cell.peat_bog_thickness))
-            print("{} + {} -> {} + {}".format(cell.non_dispersible_height, cell.height_of_water, new_cell.non_dispersible_height, new_cell.height_of_water))
+        # mutations is the collection of f[i] in the paper
+        mutations = []
+
+        for cell in self.terrain.cells():
+            water_flow = cell.get_water_flow()
+            # "commit"
+            mutations += water_flow
+
+        for mutation in mutations:
+            # "push"
+            mutation['from'].height_of_water -= mutation['water']
+            mutation['to'].height_of_water += mutation['water']
+            # if mutation['water']>0:
+            #     print(mutation)
 
     def calculate_nutrient_dist(self):
         for cell in self.terrain.cells():

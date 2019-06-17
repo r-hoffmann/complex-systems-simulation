@@ -17,4 +17,9 @@ if __name__ == "__main__":
     #         print(n)
     #     print()
 
-    model.timestep()
+    for i in range(3):
+        for cell in model.terrain.cells():
+            if cell.height_of_water > 0:
+                print(cell)
+        print()
+        model.timestep()

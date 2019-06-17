@@ -31,6 +31,7 @@ class Terrain(object):
                 terrain_block = TerrainBlock(i, j, self, cell_parameters)
                 line.append(terrain_block)
             self.terrain.append(line)
+        assert self.width * self.height == len(self.terrain) * len(self.terrain[0]), "Width and height do no correspond to given cell parameters {}x{}!={}x{}".format(self.width, self.height, len(self.terrain), len(self.terrain[0]))
     
     def cells(self):
         for line in self.terrain:
@@ -61,15 +62,18 @@ class TerrainBlock(object):
         self.height_of_water = parameters['height_of_water']
         self.concentration_of_nutrients = parameters['concentration_of_nutrients']
         self.peat_bog_thickness = parameters['peat_bog_thickness']
-
-        self.q = None # content of a cell 'i' of the neighborhood
-        self.p = None # amount which can be distributed to neighboring cells
         
     def neighbours(self):
-        for n_i in [self.i-1, self.i, self.i+1]:
-            for n_j in [self.j-1, self.j, self.j+1]:
-                if not (n_i==self.i and n_j==self.j) and self.terrain.width>n_i>=0 and self.terrain.height>n_j>=0:
-                    yield self.terrain.get_cell(n_i, n_j)
+        neighbours = []
+        if self.i > 0:
+            neighbours.append(self.terrain.get_cell(self.i - 1, self.j))
+        if self.j > 0:
+            neighbours.append(self.terrain.get_cell(self.i, self.j - 1))
+        if self.terrain.width > self.i + 1:
+            neighbours.append(self.terrain.get_cell(self.i + 1, self.j))
+        if self.terrain.height > self.j + 1:
+            neighbours.append(self.terrain.get_cell(self.i, self.j + 1))
+        return neighbours
 
     @property
     def total_height(self):
@@ -79,23 +83,66 @@ class TerrainBlock(object):
     def non_dispersible_height(self):
         return self.height_of_terrain + self.peat_bog_thickness
 
-    def get_new_waterlevel(self, cells_receiving_water=None):
+    def get_water_flow_paper(self, cells_receiving_water=None):
+        # litterally the algorithm in the paper
+        neighbours = self.neighbours()
+        m = len(neighbours)
+        eliminated = []
+        for i in range(0, m):
+            eliminated.append(False)
+        
+        new_control = True
+        while new_control:
+            new_control = False
+            q_sum = self.height_of_water
+            count = 0
+            for i in range(0, m):
+                if not eliminated[i]:
+                    q_sum += neighbours[i].total_height
+                    count += 1
+            average = q_sum / count
+            for i in range(0, m):
+                if neighbours[i].total_height > average and not eliminated[i]:
+                    new_control = True
+                    eliminated[i] = True
+        f = []
+        print('next')
+        for i in range(0, m):
+            if eliminated[i]:
+                f.append(0)
+            f.append(max(0, average - neighbours[i].total_height))
+
+        # end of algorithm in paper
+        water_flow = []
+        for i in range(0, m):
+            water_flow.append({
+                'from': self,
+                'to': neighbours[i],
+                'water': f[i]
+            })
+        return water_flow
+
+    def get_water_flow(self, cells_receiving_water=None):
+        # uses notation from paper
         if cells_receiving_water==None:
             cells_receiving_water = [self] + list(self.neighbours())
 
-        total_height_cells = sum([cell.total_height for cell in cells_receiving_water])
-        new_average_height_cells = total_height_cells / len(cells_receiving_water)
+        q_sum = sum([cell.total_height for cell in cells_receiving_water])
+        average = q_sum / len(cells_receiving_water)
         for cell in cells_receiving_water:
-            if cell!=self and cell.total_height > new_average_height_cells:
+            if cell!=self and cell.total_height > average:
                 cells_receiving_water.remove(cell)
-                return self.get_new_waterlevel(cells_receiving_water)
-
-        return new_average_height_cells
-        
-    def get_p(self):
-        ''' amount which can be distributed to neighboring cells '''
-        for neighbour in self.neighbours():
-            self.p += neighbour.f
+                return self.get_water_flow(cells_receiving_water)
+                
+        water_flow = []
+        for cell in cells_receiving_water:
+            if self != cell:
+                water_flow.append({
+                    'from': self,
+                    'to': cell,
+                    'water': average - cell.total_height
+                })
+        return water_flow
 
     def __str__(self):
         return "({},{}): {} {} {} {}".format(
@@ -105,4 +152,9 @@ class TerrainBlock(object):
             self.height_of_water,
             self.concentration_of_nutrients,
             self.peat_bog_thickness)
+    
+    def __repr__(self):
+        return "({},{})".format(
+            self.i,
+            self.j)
 

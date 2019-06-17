@@ -1,6 +1,6 @@
 {
-    "height": 2,
-    "width": 2,
+    "height": 10,
+    "width": 10,
     "slope": 0.05,
     "gamma": 0.02,
     "rho": 0.0002,
@@ -8,30 +8,622 @@
     "cells": [
         [
             {
-                "height_of_terrain": 1,
+                "height_of_terrain": 0,
                 "height_of_water": 10,
                 "concentration_of_nutrients": 0.1,
-                "peat_bog_thickness": 1
+                "peat_bog_thickness": 0
             },
             {
-                "height_of_terrain": 100,
-                "height_of_water": 1,
+                "height_of_terrain": 0,
+                "height_of_water": 10,
                 "concentration_of_nutrients": 0.1,
-                "peat_bog_thickness": 1
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 10,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
             }
         ],
         [
             {
-                "height_of_terrain": 1,
-                "height_of_water": 1,
+                "height_of_terrain": 0,
+                "height_of_water": 0,
                 "concentration_of_nutrients": 0.1,
-                "peat_bog_thickness": 1
+                "peat_bog_thickness": 0
             },
             {
-                "height_of_terrain": 1,
-                "height_of_water": 1,
+                "height_of_terrain": 0,
+                "height_of_water": 0,
                 "concentration_of_nutrients": 0.1,
-                "peat_bog_thickness": 1
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            }
+        ],
+        [
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
+            },
+            {
+                "height_of_terrain": 0,
+                "height_of_water": 0,
+                "concentration_of_nutrients": 0.1,
+                "peat_bog_thickness": 0
             }
         ]
     ]
