@@ -23,15 +23,17 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.terrain = Terrain(parameters)
     
-    def run(self, timesteps=10, dump_to_file=True):
+    def run(self, timesteps=10**3, dump_to_file=True):
         terrain_timeline = [self.terrain.get_summary()]
-        for i in range(timesteps):
+        for t in range(timesteps):
+            print("Timestep {}".format(t+1))
             self.timestep()
             terrain_timeline.append(self.terrain.get_summary())
 
         summary = self.get_summary(terrain_timeline)
         if dump_to_file:
             with open('output.json', 'w') as file:
+                print("Output to output.json")
                 json.dump(summary, file)
         return terrain_timeline
 

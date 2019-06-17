@@ -16,10 +16,5 @@ if __name__ == "__main__":
     #     for n in cell.neighbours():
     #         print(n)
     #     print()
-
-    for i in range(3):
-        for cell in model.terrain.cells():
-            if cell.height_of_water > 0:
-                print(cell)
-        print()
-        model.run()
+    
+    model.run()

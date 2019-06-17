@@ -73,16 +73,10 @@ class TerrainBlock(object):
         self.peat_bog_thickness = parameters['peat_bog_thickness']
         
     def neighbours(self):
-        neighbours = []
-        if self.x > 0:
-            neighbours.append(self.terrain.get_cell(self.x - 1, self.y))
-        if self.y > 0:
-            neighbours.append(self.terrain.get_cell(self.x, self.y - 1))
-        if self.terrain.width > self.x + 1:
-            neighbours.append(self.terrain.get_cell(self.x + 1, self.y))
-        if self.terrain.height > self.y + 1:
-            neighbours.append(self.terrain.get_cell(self.x, self.y + 1))
-        return neighbours
+        for n_x in [self.x-1, self.x, self.x+1]:
+            for n_y in [self.y-1, self.y, self.y+1]:
+                if not (n_x==self.x and n_y==self.y) and self.terrain.width>n_x>=0 and self.terrain.height>n_y>=0:
+                    yield self.terrain.get_cell(n_x, n_y)
 
     @property
     def total_height(self):
