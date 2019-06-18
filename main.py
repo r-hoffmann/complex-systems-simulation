@@ -17,4 +17,7 @@ if __name__ == "__main__":
     #         print(n)
     #     print()
     
-    model.run(200)
+    model.run(10)
+
+    # This one takes long:
+#     model.run_untill_other_side()

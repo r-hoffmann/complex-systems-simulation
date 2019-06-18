@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib as mpl
 
-def load_data(filename='output_100x100_smallPool.json'):
+def load_data(filename='output.json'):
     with open('output.json') as json_file:  
         return json.load(json_file)
 
@@ -16,9 +16,8 @@ def plot_heatmap():
     x = np.arange(0, 10, 1)
     y = np.arange(0, 10, 1)
 
-with open('output_100x100_smallPool.json') as json_file:  
-    data = json.load(json_file)
-    for timestep in data['terrain_timeline']:
+    data = load_data()
+    for t, timestep in enumerate(data['terrain_timeline']):
         fig = plt.figure()
         water_height = []
         for row in timestep:
@@ -42,8 +41,10 @@ with open('output_100x100_smallPool.json') as json_file:
 
         # make a color bar
         plt.colorbar(img,cmap=cmap, norm=norm,boundaries=bounds,ticks=bounds)
-
-        plt.show()
+        
+        plt.savefig('images/{}.png'.format(t))
+        plt.close()
+        # plt.show()
 
 def plot_hist_water():
     data = load_data()
@@ -57,4 +58,4 @@ def plot_hist_water():
         plt.show()
 
 if __name__ == "__main__":
-    plot_hist_water()
+    plot_heatmap()

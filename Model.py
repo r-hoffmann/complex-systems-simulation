@@ -22,6 +22,7 @@ class Model(object):
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
         self.terrain = Terrain(parameters)
+        self.max_depth = 0
     
     def run(self, timesteps=10, dump_to_file=True):
         self.water_out = []
@@ -43,7 +44,34 @@ class Model(object):
 
         summary = self.get_summary()
         if dump_to_file:
-            with open('output_100x100_smallPool.json', 'w') as file:
+            with open('output.json', 'w') as file:
+                print("Output to output.json")
+                json.dump(summary, file)
+        return summary
+
+    def run_untill_other_side(self, timesteps=10, dump_to_file=True):
+        self.water_out = []
+        self.water_in = []
+        self.total_peat = [self.get_total_peat()]
+        self.terrain_timeline = [self.terrain.get_summary()]
+        t = 0
+        while self.max_depth < 99:
+            t += 1
+            self.current_water_out = 0
+            self.current_water_in = 0
+
+            print("Timestep {}".format(t))
+            self.timestep()
+
+            # statistics
+            self.water_out.append(self.current_water_out)
+            self.water_in.append(self.current_water_in)
+            self.total_peat.append(self.get_total_peat())
+            self.terrain_timeline.append(self.terrain.get_summary())
+
+        summary = self.get_summary()
+        if dump_to_file:
+            with open('output.json', 'w') as file:
                 print("Output to output.json")
                 json.dump(summary, file)
         return summary
@@ -64,7 +92,7 @@ class Model(object):
             self.mutations.append({
                 'from': None,
                 'to': cell,
-                'water': 100
+                'water': 10
             })
 
     def remove_water(self):
@@ -79,14 +107,12 @@ class Model(object):
     def calculate_flows(self):
         # mutations is the collection of f[i] in the paper
         for cell in self.terrain.cells():
-            if cell.height_of_water>0:
-                mutations = cell.get_water_flow()
-                # "commit"
-                self.mutations += mutations
+            mutations = cell.get_water_flow()
+            # "commit"
+            self.mutations += mutations
 
     def update_water(self):
         mutated = 0
-        max_depth = 0
         for mutation in self.mutations:
             # None cells are either inlet or outlet
             if mutation['water'] > 0:
@@ -96,14 +122,12 @@ class Model(object):
                     self.current_water_in += mutation['water']
                 if mutation['to'] != None:
                     mutation['to'].height_of_water += mutation['water']
-                    if mutation['to'].y > max_depth:
-                        max_depth = mutation['to'].y
+                    if mutation['to'].y > self.max_depth:
+                        self.max_depth = mutation['to'].y
                 else:
                     self.current_water_out += mutation['water']
                 mutated += 1
-            # if mutation['to'] != None and mutation['from'] != None:
-            #     print(mutation, (mutation['from'].x - mutation['to'].x)**2 + (mutation['from'].y - mutation['to'].y)**2)
-        print("Ran {} water mutations, max depth {}.".format(mutated, max_depth))
+        print("Ran {} water mutations, max depth {}.".format(mutated, self.max_depth))
 
     def calculate_nutrient_dist(self):
         new_terrain = self.terrain.copy()

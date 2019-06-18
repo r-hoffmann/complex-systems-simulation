@@ -78,8 +78,7 @@ class TerrainBlock(object):
         self.height_of_water = parameters['height_of_water']
         self.concentration_of_nutrients = parameters['concentration_of_nutrients']
         # self.peat_bog_thickness = parameters['peat_bog_thickness']
-        self.peat_bog_thickness = np.abs(normal(1,3)
-)
+        self.peat_bog_thickness = np.abs(normal(1,3))
         
     def neighbours(self):
         for n_x in [self.x - 1, self.x, self.x + 1]:
@@ -98,23 +97,22 @@ class TerrainBlock(object):
     def get_water_flow(self, cells_receiving_water=None):
         # uses notation from paper
         if cells_receiving_water==None:
-            cells_receiving_water = [self] + list(self.neighbours())
+            cells_receiving_water = list(self.neighbours())
 
-        q_sum = sum([cell.total_height for cell in cells_receiving_water])
-        average = q_sum / len(cells_receiving_water)
+        q_sum = self.height_of_water + sum([cell.total_height for cell in cells_receiving_water])
+        average = q_sum / (len(cells_receiving_water) + 1)
         for cell in cells_receiving_water:
-            if cell!=self and cell.total_height > average:
+            if cell.total_height > average:
                 cells_receiving_water.remove(cell)
                 return self.get_water_flow(cells_receiving_water)
 
         water_flow = []
         for cell in cells_receiving_water:
-            if self != cell:
-                water_flow.append({
-                    'from': self,
-                    'to': cell,
-                    'water': average - cell.total_height
-                })
+            water_flow.append({
+                'from': self,
+                'to': cell,
+                'water': average - cell.total_height
+            })
         return water_flow
 
     def get_summary(self):
