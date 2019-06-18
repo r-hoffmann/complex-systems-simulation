@@ -23,12 +23,23 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.terrain = Terrain(parameters)
         self.max_depth = 0
-    
-    def run(self, timesteps=10, dump_to_file=True):
+
+    def init_statistics(self):
         self.water_out = []
         self.water_in = []
+        self.total_water = [self.get_total_water()]
         self.total_peat = [self.get_total_peat()]
         self.terrain_timeline = [self.terrain.get_summary()]
+
+    def gather_statistics(self):
+        self.water_out.append(self.current_water_out)
+        self.water_in.append(self.current_water_in)
+        self.total_water.append(self.get_total_water())
+        self.total_peat.append(self.get_total_peat())
+        self.terrain_timeline.append(self.terrain.get_summary())
+    
+    def run(self, timesteps=10, dump_to_file=True):
+        self.init_statistics()
         for t in range(timesteps):
             self.current_water_out = 0
             self.current_water_in = 0
@@ -36,11 +47,7 @@ class Model(object):
             print("Timestep {}".format(t+1))
             self.timestep()
 
-            # statistics
-            self.water_out.append(self.current_water_out)
-            self.water_in.append(self.current_water_in)
-            self.total_peat.append(self.get_total_peat())
-            self.terrain_timeline.append(self.terrain.get_summary())
+            self.gather_statistics()
 
         summary = self.get_summary()
         if dump_to_file:
@@ -50,10 +57,7 @@ class Model(object):
         return summary
 
     def run_untill_other_side(self, timesteps=10, dump_to_file=True):
-        self.water_out = []
-        self.water_in = []
-        self.total_peat = [self.get_total_peat()]
-        self.terrain_timeline = [self.terrain.get_summary()]
+        self.init_statistics()
         t = 0
         while self.max_depth < 99:
             t += 1
@@ -63,11 +67,7 @@ class Model(object):
             print("Timestep {}".format(t))
             self.timestep()
 
-            # statistics
-            self.water_out.append(self.current_water_out)
-            self.water_in.append(self.current_water_in)
-            self.total_peat.append(self.get_total_peat())
-            self.terrain_timeline.append(self.terrain.get_summary())
+            self.gather_statistics()
 
         summary = self.get_summary()
         if dump_to_file:
@@ -145,6 +145,12 @@ class Model(object):
             else:
                 cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 
+    def get_total_water(self):
+        total_water = 0
+        for cell in self.terrain.cells():
+            total_water += cell.height_of_water
+        return total_water
+
     def get_total_peat(self):
         total_peat = 0
         for cell in self.terrain.cells():
@@ -156,6 +162,7 @@ class Model(object):
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
         print(self.total_peat)
+        print(self.total_water)
         print(self.water_in)
         print(self.water_out)
         return {
@@ -163,6 +170,7 @@ class Model(object):
             'rho': self.rho,
             'mu': self.mu,
             'peat_timeline': self.total_peat,
+            'water_timeline': self.total_water,
             'water_in_timeline': self.water_in,
             'water_out_timeline': self.water_out,
             'terrain_timeline': self.terrain_timeline
