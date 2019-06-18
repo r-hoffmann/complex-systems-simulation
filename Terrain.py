@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 from numpy.random import normal
+from TerrainGenerator import TerrainGenerator
 
 class Terrain(object):
     def __init__(self, parameters=None, original=True):
@@ -22,14 +23,28 @@ class Terrain(object):
         self.height = self.parameters['height']
         self.width = self.parameters['width']
         self.slope = self.parameters['slope']
+        self.generator_type = self.parameters['generator_type']
+        self.generator_parameters = self.parameters['generator_parameters']
         if original:
             self.generate_terrain()
     
     def generate_terrain(self):
         self.terrain = []
-        for y, cell_line_parameters in enumerate(self.parameters['cells']):
+        if self.generator_type:
+            generator = TerrainGenerator(self.width, self.height)
+            terrain_heights = generator.generate(self.generator_type, self.generator_parameters)
+            cell_parameters = []
+            for cell_line_parameters, terrain_height in zip(self.parameters['cells'], terrain_heights):
+                cell_parameters.append(zip(cell_line_parameters, terrain_height))
+        else:
+            cell_parameters = self.parameters['cells']
+
+        for y, cell_line_parameters in enumerate(cell_parameters):
             line = []
             for x, cell_parameters in enumerate(cell_line_parameters):
+                if self.generator_type:
+                    cell_parameters, cell_parameters['height_of_terrain'] = cell_parameters
+
                 terrain_block = TerrainBlock(x, y, self, cell_parameters)
                 line.append(terrain_block)
             self.terrain.append(line)
@@ -71,10 +86,7 @@ class TerrainBlock(object):
         self.x = x
         self.y = y
         self.terrain = terrain
-        # self.height_of_terrain = parameters['height_of_terrain']
-        # print(normal(10,6))
-        self.height_of_terrain = np.abs(normal(1,9))
-
+        self.height_of_terrain = parameters['height_of_terrain']
         self.height_of_water = parameters['height_of_water']
         self.concentration_of_nutrients = parameters['concentration_of_nutrients']
         # self.peat_bog_thickness = parameters['peat_bog_thickness']

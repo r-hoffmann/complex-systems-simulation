@@ -34,9 +34,9 @@ if __name__ == "__main__":
     #         print(n)
     #     print()
     
-    # model.run(100)
+    model.run(50)
 
     # This one takes long:
 #     model.run_untill_other_side()
-    test_each_terrain()
+    # test_each_terrain()
 
