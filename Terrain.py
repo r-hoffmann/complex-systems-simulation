@@ -1,6 +1,6 @@
 import copy
-from numpy.random import normal
 import numpy as np
+from numpy.random import normal
 
 class Terrain(object):
     def __init__(self, parameters=None, original=True):
@@ -138,4 +138,3 @@ class TerrainBlock(object):
         return "({},{})".format(
             self.x,
             self.y)
-
