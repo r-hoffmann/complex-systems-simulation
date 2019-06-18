@@ -1,4 +1,6 @@
 import json
+from threading import Thread
+from multiprocessing import Queue, cpu_count
 from Terrain import Terrain
 
 class Model(object):
@@ -23,6 +25,9 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.terrain = Terrain(parameters)
         self.max_depth = 0
+
+        self.number_of_threads = cpu_count() - 2
+        print("Running on {} threads.".format(self.number_of_threads))
 
     def init_statistics(self):
         self.water_out = []
@@ -77,39 +82,62 @@ class Model(object):
         return summary
 
     def timestep(self):
-        # Directly from paper
+        mutations = Queue()
+        worker_supply_water = Thread(target = self.supply_water, args = (mutations,))
+        worker_remove_water = Thread(target = self.remove_water, args = (mutations,))
+        worker_calculate_flows = self.calculate_flows(mutations)
+        
+        workers = [worker_supply_water, worker_remove_water] + worker_calculate_flows
+
+        for worker in workers:
+            worker.setDaemon(True)
+            worker.start()
+
         self.mutations = []
-        self.supply_water()
-        self.remove_water()
-        self.calculate_flows()
+        for worker in workers:
+            worker.join()
+        
+        while not mutations.empty():
+            self.mutations.append(mutations.get())
+
         self.update_water()
         self.calculate_nutrient_dist()
         self.calculate_peat_growth()
 
-    def supply_water(self):
+    def supply_water(self, mutations):
         # @todo: Make some kind of distribution?
         for cell in self.terrain.terrain[0]:
-            self.mutations.append({
+            mutations.put({
                 'from': None,
                 'to': cell,
                 'water': 10
             })
+        return 0
 
-    def remove_water(self):
+    def remove_water(self, mutations):
         # @todo: Remove all water from last row?
         for cell in self.terrain.terrain[-1]:
-            self.mutations.append({
+            mutations.put({
                 'from': cell,
                 'to': None,
                 'water': cell.height_of_water
             })
+        return 0
 
-    def calculate_flows(self):
+    def calculate_flows(self, mutations):
         # mutations is the collection of f[i] in the paper
+        processes = []
+
         for cell in self.terrain.cells():
-            mutations = cell.get_water_flow()
-            # "commit"
-            self.mutations += mutations
+            process = Thread(target = self.calculate_flow, args = (cell, mutations))
+            processes.append(process)
+
+        return processes
+    
+    def calculate_flow(self, cell, mutations):
+        for mutation in cell.get_water_flow():
+            mutations.put(mutation)
+        return 0
 
     def update_water(self):
         mutated = 0
