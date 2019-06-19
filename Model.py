@@ -14,7 +14,6 @@ class Model(object):
                 cells (list of lists of dict containing the keys:
                     height_of_terrain
                     height_of_water
-                    concentration_of_nutrients
                     peat_bog_thickness)
         """
         self.parameters = parameters
