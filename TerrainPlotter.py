@@ -69,7 +69,11 @@ class TerrainPlotter(object):
                 for cell in row:
                     terrain_heights_line.append(cell['height_of_terrain'])
                     peat_heights_line.append(cell['peat_bog_thickness'])
-                    water_heights_line.append(cell['height_of_water'])
+                    if cell['height_of_water'] > 0:
+                        water_heights_line.append(1)
+                    else:
+                        water_heights_line.append(0)
+                        # water_heights_line.append(cell['height_of_water'])
 
                 terrain_heights.append(terrain_heights_line)
                 peat_heights.append(peat_heights_line)
@@ -87,7 +91,7 @@ class TerrainPlotter(object):
             norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
 
             cmap_water = mpl.cm.Blues
-            norm_water = mpl.colors.Normalize(vmin=water_heights.min(), vmax=water_heights.max())
+            norm_water = mpl.colors.Normalize(vmin=water_heights.min(), vmax=10)
                                                 
             fig, (ax1, ax2, ax3) = plt.subplots(figsize=(12, 3), ncols=3)
 

@@ -23,6 +23,7 @@ class Terrain(object):
         self.height = self.parameters['height']
         self.width = self.parameters['width']
         self.slope = self.parameters['slope']
+        self.concentration_of_nutrients = self.parameters['concentration_of_nutrients']
         self.generator_type = self.parameters['generator_type']
         self.generator_parameters = self.parameters['generator_parameters']
         if original:
@@ -36,7 +37,7 @@ class Terrain(object):
         for y, terrain_heights_line in enumerate(terrain_heights):
             line = []
             for x, terrain_height in enumerate(terrain_heights_line):
-                terrain_block = TerrainBlock(x, y, self, terrain_height)
+                terrain_block = TerrainBlock(x, y, self, terrain_height, self.concentration_of_nutrients)
                 line.append(terrain_block)
             self.terrain.append(line)
         assert self.width * self.height == len(self.terrain) * len(self.terrain[0]), "Width and height do no correspond to given cell parameters {}x{}!={}x{}".format(self.width, self.height, len(self.terrain), len(self.terrain[0]))
@@ -66,7 +67,7 @@ class Terrain(object):
         return new_terrain
 
 class TerrainBlock(object):
-    def __init__(self, x, y, terrain, height_of_terrain):
+    def __init__(self, x, y, terrain, height_of_terrain, concentration_of_nutrients):
         """
             parameters should be a dict with keys:
                 height_of_terrain
@@ -79,7 +80,7 @@ class TerrainBlock(object):
         self.terrain = terrain
         self.height_of_terrain = height_of_terrain
         self.height_of_water = 0
-        self.concentration_of_nutrients = 0
+        self.concentration_of_nutrients = concentration_of_nutrients
         self.peat_bog_thickness = 0
         
     def neighbours(self):
@@ -97,11 +98,13 @@ class TerrainBlock(object):
         return self.height_of_terrain + self.peat_bog_thickness
 
     def get_water_flow(self, cells_receiving_water=None):
+        if self.height_of_water == 0:
+            return []
         # uses notation from paper
         if cells_receiving_water==None:
             cells_receiving_water = list(self.neighbours())
 
-        q_sum = self.height_of_water + sum([cell.total_height for cell in cells_receiving_water])
+        q_sum = self.total_height + sum([cell.total_height for cell in cells_receiving_water])
         average = q_sum / (len(cells_receiving_water) + 1)
         for cell in cells_receiving_water:
             if cell.total_height > average:
@@ -109,12 +112,23 @@ class TerrainBlock(object):
                 return self.get_water_flow(cells_receiving_water)
 
         water_flow = []
+        water_lost = 0
         for cell in cells_receiving_water:
+            water_lost += (average - cell.total_height)
             water_flow.append({
                 'from': self,
                 'to': cell,
                 'water': average - cell.total_height
             })
+        if water_lost > self.height_of_water:
+            ratio_fix = self.height_of_water / water_lost
+            water_flow = []
+            for cell in cells_receiving_water:
+                water_flow.append({
+                    'from': self,
+                    'to': cell,
+                    'water': (average - cell.total_height) * ratio_fix
+                })
         return water_flow
 
     def get_summary(self):
