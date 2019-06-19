@@ -1,0 +1,1 @@
+convert -delay 10 -loop 0 $(ls images/*.png | sort -V) images/animated.gif
