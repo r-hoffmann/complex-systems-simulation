@@ -2,7 +2,6 @@ import math, noise, random
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import namedtuple
-from scipy.misc import toimage
 
 class TerrainGenerator(object):
     def __init__(self, width=100, height=100, slope=0.05):

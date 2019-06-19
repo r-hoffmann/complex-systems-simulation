@@ -132,15 +132,19 @@ class Model(object):
         new_terrain = self.terrain.copy()
         for cell, new_cell in zip(self.terrain.cells(), new_terrain.cells()):
             if cell.height_of_water > 0:
-                cell.concentration_of_nutrients = 1
+                new_cell.concentration_of_nutrients = 1
             else:
-                new_cell.concentration_of_nutrients = self.gamma * max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
+                new_nutrients = self.gamma * max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
+                if cell.concentration_of_nutrients < new_nutrients:
+                    new_cell.concentration_of_nutrients = self.gamma * max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
+                else:
+                    new_cell.concentration_of_nutrients = cell.concentration_of_nutrients
         self.terrain = new_terrain
 
     def calculate_peat_growth(self):
         for cell in self.terrain.cells():
             if cell.height_of_water > 0:
-                cell.peat_bog_thickness += self.mu * cell.concentration_of_nutrients
+                cell.peat_bog_thickness += self.mu * cell.height_of_water
             else:
                 cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 

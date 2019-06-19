@@ -34,7 +34,7 @@ if __name__ == "__main__":
     #         print(n)
     #     print()
     
-    model.run(10**3)
+    model.run(1000)
 
     # This one takes long:
 #     model.run_untill_other_side()
