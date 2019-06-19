@@ -81,7 +81,7 @@ class TerrainPlotter(object):
 
             # make a color map of fixed colors
             cmap_terrain = mpl.colors.ListedColormap(['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#b30000','#7f0000'])
-            bounds_terrain = [0, 2, 4, 6, 8, 10, 12, 14, 16]
+            bounds_terrain = [x / 10.0 for x in range(10)]
             norm_terrain = mpl.colors.BoundaryNorm(bounds_terrain, cmap_terrain.N)
 
             cmap_peat = mpl.colors.ListedColormap(['#0eff00', '#1fc600', '#089000', '#0a5d00', '#063b00'])

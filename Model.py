@@ -21,6 +21,7 @@ class Model(object):
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
+        self.water_per_timestep = self.parameters['water_per_timestep']
         self.terrain = Terrain(parameters)
         self.max_depth = 0
 
@@ -87,18 +88,10 @@ class Model(object):
         self.calculate_peat_growth()
 
     def supply_water(self):
-        # @todo: Make some kind of distribution?
-        # for cell in self.terrain.terrain[0]:
-        #     self.mutations.append({
-        #         'from': None,
-        #         'to': cell,
-        #         'water': 10
-        #     })
-
         self.mutations.append({
                 'from': None,
                 'to': self.terrain.terrain[0][50],
-                'water': 50
+                'water': self.water_per_timestep
             })
 
     def remove_water(self):

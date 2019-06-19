@@ -2,19 +2,29 @@ import math, noise, random
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import namedtuple
+from scipy.misc import toimage
 
 class TerrainGenerator(object):
-    def __init__(self, width=100, height=100):
+    def __init__(self, width=100, height=100, slope=0.05):
         self.width = width
         self.height = height
+        self.slope = slope
 
     def generate(self, grid_type='hill_grid', parameters={}):
         type_to_function = {
+            'flat': self.flat,
             'hill_grid': self.generate_hill_grid,
             'fractal_height_map': self.generate_fractal_height_map,
             'pnoise2': self.generate_pnoise2
         }
-        return type_to_function[grid_type](parameters)
+        grid = type_to_function[grid_type](parameters)
+        for y, row in enumerate(grid):
+            for x, cell in enumerate(row):
+                grid[y][x] = cell + (self.slope * (self.height / 1000)) * (self.height - y)
+        return grid
+
+    def flat(self):
+        return [[0 for x in range(self.width)] for y in range(self.height)]
 
     def generate_hill_grid(self, parameters):
         # @todo should accept non-rectangular sizes
@@ -30,22 +40,23 @@ class TerrainGenerator(object):
     
     def generate_pnoise2(self, parameters):
         shape = (self.width, self.height)
-        scale = 100
+        scale = 1000
         octaves = 10
-        persistence = 0.5
-        lacunarity = 2.0
+        persistence = .3
+        lacunarity = 100
 
         world = np.zeros(shape)
         for i in range(shape[0]):
             for j in range(shape[1]):
-                world[i][j] = (noise.pnoise2(i/scale, 
+                world[i][j] = noise.pnoise2(i/scale, 
                                         j/scale, 
                                         octaves=octaves, 
                                         persistence=persistence, 
                                         lacunarity=lacunarity, 
                                         repeatx=1024, 
                                         repeaty=1024, 
-                                        base=0))+1**2
+                                        base=0)
+        world = parameters['roughness'] * (world - world.min()) / world.max()
         return world
 
 class HillGrid:
