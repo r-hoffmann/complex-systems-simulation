@@ -30,22 +30,13 @@ class Terrain(object):
     
     def generate_terrain(self):
         self.terrain = []
-        if self.generator_type:
-            generator = TerrainGenerator(self.width, self.height)
-            terrain_heights = generator.generate(self.generator_type, self.generator_parameters)
-            cell_parameters = []
-            for cell_line_parameters, terrain_height in zip(self.parameters['cells'], terrain_heights):
-                cell_parameters.append(zip(cell_line_parameters, terrain_height))
-        else:
-            cell_parameters = self.parameters['cells']
+        generator = TerrainGenerator(self.width, self.height, self.slope)
+        terrain_heights = generator.generate(self.generator_type, self.generator_parameters)
 
-        for y, cell_line_parameters in enumerate(cell_parameters):
+        for y, terrain_heights_line in enumerate(terrain_heights):
             line = []
-            for x, cell_parameters in enumerate(cell_line_parameters):
-                if self.generator_type:
-                    cell_parameters, cell_parameters['height_of_terrain'] = cell_parameters
-
-                terrain_block = TerrainBlock(x, y, self, cell_parameters)
+            for x, terrain_height in enumerate(terrain_heights_line):
+                terrain_block = TerrainBlock(x, y, self, terrain_height)
                 line.append(terrain_block)
             self.terrain.append(line)
         assert self.width * self.height == len(self.terrain) * len(self.terrain[0]), "Width and height do no correspond to given cell parameters {}x{}!={}x{}".format(self.width, self.height, len(self.terrain), len(self.terrain[0]))
@@ -75,7 +66,7 @@ class Terrain(object):
         return new_terrain
 
 class TerrainBlock(object):
-    def __init__(self, x, y, terrain, parameters):
+    def __init__(self, x, y, terrain, height_of_terrain):
         """
             parameters should be a dict with keys:
                 height_of_terrain
@@ -86,11 +77,10 @@ class TerrainBlock(object):
         self.x = x
         self.y = y
         self.terrain = terrain
-        self.height_of_terrain = parameters['height_of_terrain']
-        self.height_of_water = parameters['height_of_water']
-        self.concentration_of_nutrients = parameters['concentration_of_nutrients']
-        # self.peat_bog_thickness = parameters['peat_bog_thickness']
-        self.peat_bog_thickness = np.abs(normal(1,3))
+        self.height_of_terrain = height_of_terrain
+        self.height_of_water = 0
+        self.concentration_of_nutrients = 0
+        self.peat_bog_thickness = 0
         
     def neighbours(self):
         for n_x in [self.x - 1, self.x, self.x + 1]:
