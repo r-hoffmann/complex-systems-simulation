@@ -41,7 +41,7 @@ class TerrainPlotter(object):
             plt.colorbar(img,cmap=cmap, norm=norm,boundaries=bounds,ticks=bounds)
             
             if self.save_to_filesystem:
-                plt.savefig('images/{}.png'.format(t))
+                plt.savefig('images/{:05d}.png'.format(t))
             if self.show:
                 plt.show()
             plt.close()
@@ -80,18 +80,15 @@ class TerrainPlotter(object):
             water_heights = np.array(water_heights)
 
             # make a color map of fixed colors
-            cmap_terrain = mpl.colors.ListedColormap(['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#b30000','#7f0000'])
-            bounds_terrain = [x / 10.0 for x in range(10)]
-            norm_terrain = mpl.colors.BoundaryNorm(bounds_terrain, cmap_terrain.N)
+            cmap_terrain = mpl.cm.autumn_r
+            norm_terrain = mpl.colors.Normalize(vmin=terrain_heights.min(), vmax=terrain_heights.max())
+            
+            cmap_peat = mpl.cm.Greens
+            norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
 
-            cmap_peat = mpl.colors.ListedColormap(['#0eff00', '#1fc600', '#089000', '#0a5d00', '#063b00'])
-            bounds_peat = [x / 10.0 for x in range(10)]
-            norm_peat = mpl.colors.BoundaryNorm(bounds_peat, cmap_terrain.N)
-
-            cmap_water = mpl.colors.ListedColormap(['#ffffff', '#3690c0', '#045a8d', '#023858'])
-            bounds_water = [0, 10, 20, 30]
-            norm_water = mpl.colors.BoundaryNorm(bounds_water, cmap_terrain.N)
-
+            cmap_water = mpl.cm.Blues
+            norm_water = mpl.colors.Normalize(vmin=water_heights.min(), vmax=water_heights.max())
+                                                
             fig, (ax1, ax2, ax3) = plt.subplots(figsize=(12, 3), ncols=3)
 
             ax1.set_title('Height of terrain')
