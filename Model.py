@@ -88,11 +88,17 @@ class Model(object):
 
     def supply_water(self):
         # @todo: Make some kind of distribution?
-        for cell in self.terrain.terrain[0]:
-            self.mutations.append({
+        # for cell in self.terrain.terrain[0]:
+        #     self.mutations.append({
+        #         'from': None,
+        #         'to': cell,
+        #         'water': 10
+        #     })
+
+        self.mutations.append({
                 'from': None,
-                'to': cell,
-                'water': 10
+                'to': self.terrain.terrain[0][50],
+                'water': 50
             })
 
     def remove_water(self):
