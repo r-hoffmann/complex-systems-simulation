@@ -28,6 +28,7 @@ class Model(object):
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
+        self.water_threshold = self.parameters['water_threshold']
         self.water_per_timestep = self.parameters['water_per_timestep']
         self.timesteps = self.parameters['timesteps']
         self.terrain = Terrain(self.parameters)
@@ -143,12 +144,12 @@ class Model(object):
     def calculate_nutrient_dist(self):
         new_terrain = self.terrain.copy()
         for cell, new_cell in zip(self.terrain.cells(), new_terrain.cells()):
-            if cell.height_of_water > 0:
+            if cell.height_of_water > self.water_threshold:
                 new_cell.concentration_of_nutrients = 1
             else:
                 new_nutrients = self.gamma * max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
                 if cell.concentration_of_nutrients < new_nutrients:
-                    new_cell.concentration_of_nutrients = self.gamma * max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])
+                    new_cell.concentration_of_nutrients = new_nutrients
                 else:
                     new_cell.concentration_of_nutrients = cell.concentration_of_nutrients
         self.terrain = new_terrain

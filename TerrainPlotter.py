@@ -1,4 +1,4 @@
-import json
+import json, math
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
@@ -67,8 +67,6 @@ class TerrainPlotter(object):
                 peat_heights_line = []
                 water_heights_line = []
                 for cell in row:
-                    terrain_heights_line.append(cell['terrain'])
-                    peat_heights_line.append(cell['peat'])
                     water_heights_line.append(cell['water'])
                     concentration_of_nutrients_line.append(cell['nutrients'])
                     peat_heights_line.append(cell['peat'])
@@ -83,7 +81,7 @@ class TerrainPlotter(object):
 
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
-            norm_terrain = mpl.colors.Normalize(vmin=concentration_of_nutrients.min(), vmax=concentration_of_nutrients.max())
+            norm_terrain = mpl.colors.Normalize(vmin=0, vmax=.5)
             
             cmap_peat = mpl.cm.Greens
             norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
