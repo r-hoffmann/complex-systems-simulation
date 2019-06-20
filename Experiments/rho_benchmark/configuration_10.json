@@ -1,9 +1,9 @@
 {
     "height": 330,
     "width": 330,
-    "slope": 5,
+    "slope": 0.5,
     "gamma": 0.01,
-    "rho": 0.0002,
+    "rho": 0.002,
     "mu": 0.00014, 
     "concentration_of_nutrients": 0,
     "water_per_timestep": 1,

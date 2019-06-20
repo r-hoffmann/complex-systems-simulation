@@ -95,7 +95,7 @@ class TerrainPlotter(object):
             pos1 = ax1.imshow(concentration_of_nutrients, interpolation='nearest', cmap=cmap_terrain, norm=norm_terrain)
             fig.colorbar(pos1, ax=ax1)
             
-            ax2.set_title('Height of peat')
+            ax2.set_title('timestep {}\nHeight of peat'.format(t))
             pos2 = ax2.imshow(peat_heights, interpolation='nearest', cmap=cmap_peat, norm=norm_peat)
             fig.colorbar(pos2, ax=ax2)
             

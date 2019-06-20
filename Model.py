@@ -28,7 +28,6 @@ class Model(object):
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
-        self.water_threshold = self.parameters['water_threshold']
         self.water_per_timestep = self.parameters['water_per_timestep']
         self.timesteps = self.parameters['timesteps']
         self.terrain = Terrain(self.parameters)
@@ -60,8 +59,8 @@ class Model(object):
 
             print("Timestep {}".format(t+1))
             self.timestep()
-
-            self.gather_statistics()
+            if t % 10 == 0:
+                self.gather_statistics()
 
         summary = self.get_summary()
         if dump_to_file:
@@ -103,7 +102,7 @@ class Model(object):
     def supply_water(self):
         self.mutations.append({
                 'from': None,
-                'to': self.terrain.terrain[0][50],
+                'to': self.terrain.terrain[0][int(self.terrain.width / 2)],
                 'water': self.water_per_timestep
             })
 
@@ -144,7 +143,7 @@ class Model(object):
     def calculate_nutrient_dist(self):
         new_terrain = self.terrain.copy()
         for cell, new_cell in zip(self.terrain.cells(), new_terrain.cells()):
-            if cell.height_of_water > self.water_threshold:
+            if cell.height_of_water > 0:
                 new_cell.concentration_of_nutrients = 1
             else:
                 new_nutrients = self.gamma * max([neighbour_cell.concentration_of_nutrients for neighbour_cell in cell.neighbours()])

@@ -23,6 +23,6 @@ if __name__ == "__main__":
     model = Model()
     model.run()
 
-    plotter = TerrainPlotter(filename='output.json', save_to_filesystem=True, show=False)
-    plotter.plot_last_heights()
+    # plotter = TerrainPlotter(filename='output.json', save_to_filesystem=True, show=False)
+    # plotter.plot_last_heights()
 
