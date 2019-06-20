@@ -29,6 +29,7 @@ class Model(object):
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
         self.water_per_timestep = self.parameters['water_per_timestep']
+        self.timesteps = self.parameters['timesteps']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
 
@@ -50,9 +51,9 @@ class Model(object):
         self.total_peat.append(self.get_total_peat())
         self.terrain_timeline.append(self.terrain.get_summary())
     
-    def run(self, timesteps=10, dump_to_file=True):
+    def run(self, dump_to_file=True):
         self.init_statistics()
-        for t in range(timesteps):
+        for t in range(self.timesteps):
             self.current_water_out = 0
             self.current_water_in = 0
 
