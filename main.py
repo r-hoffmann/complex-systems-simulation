@@ -1,5 +1,6 @@
 import json
 from Model import Model
+from TerrainPlotter import TerrainPlotter
 
 def test_each_terrain():
     from TerrainGenerator import TerrainGenerator
@@ -21,3 +22,7 @@ def test_each_terrain():
 if __name__ == "__main__":
     model = Model()
     model.run()
+
+    plotter = TerrainPlotter(save_to_filesystem=True, show=False)
+    plotter.plot_last_heights()
+
