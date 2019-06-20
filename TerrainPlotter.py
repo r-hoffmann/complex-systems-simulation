@@ -21,11 +21,11 @@ class TerrainPlotter(object):
             for row in timestep:
                 line = []
                 for cell in row:
-                    if cell['height_of_water'] > 0:
-                        line.append(-1*cell['height_of_water'])
+                    if cell['water'] > 0:
+                        line.append(-1*cell['water'])
                     else:
-                        line.append(cell['height_of_terrain']+cell['peat_bog_thickness'])
-                    # line.append(cell['height_of_water'])
+                        line.append(cell['terrain']+cell['peat'])
+                    # line.append(cell['water'])
                 water_height.append(line)
                 # print(line)
             water_height = np.array(water_height)
@@ -51,7 +51,7 @@ class TerrainPlotter(object):
             water_heights = []
             for row in timestep[0:2]:
                 for cell in row:
-                    water_heights.append(cell['height_of_water'])
+                    water_heights.append(cell['water'])
             plt.hist(water_heights, density=True)
             print(min(water_heights), max(water_heights))
             if self.show:
@@ -59,33 +59,33 @@ class TerrainPlotter(object):
 
     def plot_all_heights(self):
         for t, timestep in enumerate(self.data['terrain_timeline']):
-            terrain_heights = []
+            concentration_of_nutrients = []
             peat_heights = []
             water_heights = []
             for row in timestep:
-                terrain_heights_line = []
+                concentration_of_nutrients_line = []
                 peat_heights_line = []
                 water_heights_line = []
                 for cell in row:
-                    terrain_heights_line.append(cell['height_of_terrain'])
-                    peat_heights_line.append(cell['peat_bog_thickness'])
-                    if cell['height_of_water'] > 0:
+                    concentration_of_nutrients_line.append(cell['nutrients'])
+                    peat_heights_line.append(cell['peat'])
+                    if cell['water'] > 0:
                         water_heights_line.append(1)
                     else:
                         water_heights_line.append(0)
-                        # water_heights_line.append(cell['height_of_water'])
+                        # water_heights_line.append(cell['water'])
 
-                terrain_heights.append(terrain_heights_line)
+                concentration_of_nutrients.append(concentration_of_nutrients_line)
                 peat_heights.append(peat_heights_line)
                 water_heights.append(water_heights_line)
 
-            terrain_heights = np.array(terrain_heights)
+            concentration_of_nutrients = np.array(concentration_of_nutrients)
             peat_heights = np.array(peat_heights)
             water_heights = np.array(water_heights)
 
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
-            norm_terrain = mpl.colors.Normalize(vmin=terrain_heights.min(), vmax=terrain_heights.max())
+            norm_terrain = mpl.colors.Normalize(vmin=concentration_of_nutrients.min(), vmax=concentration_of_nutrients.max())
             
             cmap_peat = mpl.cm.Greens
             norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
@@ -95,8 +95,8 @@ class TerrainPlotter(object):
                                                 
             fig, (ax1, ax2, ax3) = plt.subplots(figsize=(12, 3), ncols=3)
 
-            ax1.set_title('Height of terrain')
-            pos1 = ax1.imshow(terrain_heights, interpolation='nearest', cmap=cmap_terrain, norm=norm_terrain)
+            ax1.set_title('Concentration of nutrients')
+            pos1 = ax1.imshow(concentration_of_nutrients, interpolation='nearest', cmap=cmap_terrain, norm=norm_terrain)
             fig.colorbar(pos1, ax=ax1)
             
             ax2.set_title('Height of peat')

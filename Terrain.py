@@ -133,12 +133,10 @@ class TerrainBlock(object):
 
     def get_summary(self):
         return {
-                    "x": self.x,
-                    "y": self.y,
-                    "height_of_terrain": self.height_of_terrain,
-                    "height_of_water": self.height_of_water,
-                    "concentration_of_nutrients": self.concentration_of_nutrients,
-                    "peat_bog_thickness": self.peat_bog_thickness
+                    "terrain": self.height_of_terrain,
+                    "water": self.height_of_water,
+                    "nutrients": self.concentration_of_nutrients,
+                    "peat": self.peat_bog_thickness
                 }
 
     def __str__(self):
