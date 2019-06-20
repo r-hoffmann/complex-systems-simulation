@@ -6,13 +6,13 @@ import matplotlib as mpl
 class TerrainPlotter(object):
     def __init__(self, filename='output.json', show=True, save_to_filesystem=False):
         self.filename = filename
-        self.data = self.load_data(self.filename)
+        self.load_data()
         self.show = show
         self.save_to_filesystem = save_to_filesystem
     
-    def load_data(self, filename='output.json'):
-        with open('output.json') as json_file:  
-            return json.load(json_file)
+    def load_data(self):
+        with open(self.filename) as json_file:  
+            self.data = json.load(json_file)
 
     def plot_heatmap(self):
         for t, timestep in enumerate(self.data['terrain_timeline']):

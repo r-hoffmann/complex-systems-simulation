@@ -2,7 +2,7 @@ import json
 from Terrain import Terrain
 
 class Model(object):
-    def __init__(self, parameters=None):
+    def __init__(self, experiment=None):
         """
             dict parameters should contain the following keys:
                 height (int)
@@ -17,13 +17,24 @@ class Model(object):
                     concentration_of_nutrients
                     peat_bog_thickness)
         """
-        self.parameters = parameters
+        if experiment!=None:
+            self.input_file = 'configuration_{}.json'.format(experiment)
+            self.output_file = 'output_{}.json'.format(experiment)
+        else:
+            self.input_file = 'configuration.json'
+            self.output_file = 'output.json'
+
+        self.load_configuration()
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
         self.water_per_timestep = self.parameters['water_per_timestep']
-        self.terrain = Terrain(parameters)
+        self.terrain = Terrain(self.parameters)
         self.max_depth = 0
+
+    def load_configuration(self):
+        with open(self.input_file) as file:
+            self.parameters = json.load(file)
 
     def init_statistics(self):
         self.water_out = []
@@ -52,8 +63,8 @@ class Model(object):
 
         summary = self.get_summary()
         if dump_to_file:
-            with open('output.json', 'w') as file:
-                print("Output to output.json")
+            with open(self.output_file, 'w') as file:
+                print("Output to {}".format(self.output_file))
                 json.dump(summary, file)
         return summary
 
@@ -72,8 +83,8 @@ class Model(object):
 
         summary = self.get_summary()
         if dump_to_file:
-            with open('output.json', 'w') as file:
-                print("Output to output.json")
+            with open(self.output_file, 'w') as file:
+                print("Output to {}".format(self.output_file))
                 json.dump(summary, file)
         return summary
 

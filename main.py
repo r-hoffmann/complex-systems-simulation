@@ -1,10 +1,6 @@
 import json
 from Model import Model
 
-def read_json(filename='configuration.json'):
-    with open(filename) as file:
-        return json.load(file)
-
 def test_each_terrain():
     from TerrainGenerator import TerrainGenerator
     width = 100
@@ -23,20 +19,5 @@ def test_each_terrain():
     assert len(pnoise2)==width and len(pnoise2[0])==height, "Something wrong with pnoise2 dimensions {}x{}!={}x{}".format(width,height,len(pnoise2),len(pnoise2[0]))
 
 if __name__ == "__main__":
-    parameters = read_json()
-
-    model = Model(parameters)
-    # model.step()
-
-    # for cell in model.terrain.cells():
-    #     print(cell)
-    #     for n in cell.neighbours():
-    #         print(n)
-    #     print()
-    
-    model.run(1000)
-
-    # This one takes long:
-#     model.run_untill_other_side()
-    # test_each_terrain()
-
+    model = Model(1)
+    model.run()
