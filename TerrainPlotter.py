@@ -67,9 +67,9 @@ class TerrainPlotter(object):
                 peat_heights_line = []
                 water_heights_line = []
                 for cell in row:
-                    terrain_heights_line.append(cell['height_of_terrain'])
-                    peat_heights_line.append(cell['peat_bog_thickness'])
-                    water_heights_line.append(cell['height_of_water'])
+                    terrain_heights_line.append(cell['terrain'])
+                    peat_heights_line.append(cell['peat'])
+                    water_heights_line.append(cell['water'])
                     concentration_of_nutrients_line.append(cell['nutrients'])
                     peat_heights_line.append(cell['peat'])
 
@@ -122,13 +122,13 @@ class TerrainPlotter(object):
             peat_heights_line = []
             water_heights_line = []
             for cell in row:
-                terrain_heights_line.append(cell['height_of_terrain'])
-                peat_heights_line.append(cell['peat_bog_thickness'])
-                # if cell['height_of_water'] > 0:
+                terrain_heights_line.append(cell['terrain'])
+                peat_heights_line.append(cell['peat'])
+                # if cell['water'] > 0:
                 #     water_heights_line.append(1)
                 # else:
                 #     water_heights_line.append(0)
-                water_heights_line.append(cell['height_of_water'])
+                water_heights_line.append(cell['water'])
 
             terrain_heights.append(terrain_heights_line)
             peat_heights.append(peat_heights_line)
