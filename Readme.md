@@ -15,6 +15,7 @@ Code for the course complex system simulation at the UvA 2018-2019.
     "generator_type": "pnoise2",
     "generator_parameters": {
         "roughness": 0.10
-    }
+    },
+    "timesteps": 100
 }
 ```
