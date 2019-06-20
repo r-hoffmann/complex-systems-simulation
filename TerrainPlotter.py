@@ -81,7 +81,7 @@ class TerrainPlotter(object):
 
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
-            norm_terrain = mpl.colors.Normalize(vmin=0, vmax=.5)
+            norm_terrain = mpl.colors.Normalize(vmin=0, vmax=.03)
             
             cmap_peat = mpl.cm.Greens
             norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
