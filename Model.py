@@ -41,23 +41,40 @@ class Model(object):
     def init_statistics(self):
         self.water_out = []
         self.water_in = []
+        self.smooth_river = [[0]*self.parameters['width']]
         self.total_water = [self.get_total_water()]
         self.total_peat = [self.get_total_peat()]
         self.terrain_timeline = [self.terrain.get_summary()]
 
     def output_metrics(self):
-        print(self.terrain.terrain[-1][0].height_of_water)
-        self.water_cells_num = 0
-        previous_cell = 0
-        self.num_of_outgoing_brenches = 0
-        for cell in self.terrain.terrain[-2]:
-            if cell.height_of_water>0:
-                self.water_cells_num += 1
-                if previous_cell == 0:
-                    self.num_of_outgoing_brenches += 1
-            previous_cell = cell.height_of_water
+        # print(self.terrain.terrain[-1][0].height_of_water)
+        # self.water_cells_num = 0
+        # previous_cell = 0
+        # previous_cell_1 = 0
+        # previous_cell_2 = 0
+
+        # # self.num_of_outgoing_brenches = 0
+        # # for cell in self.terrain.terrain[-3]:
+        # #     if cell.height_of_water>0:
+        # #         self.water_cells_num += 1
+        # #         if (previous_cell == 0 and previous_cell_1 == 0) and previous_cell_2 ==0:
+        # #             self.num_of_outgoing_brenches += 1
+        # #     previous_cell_2 = previous_cell_1
+        # #     previous_cell_1 = previous_cell
+        # #     previous_cell = cell.height_of_water
+        self.current_smooth_river = [0]*len(self.terrain.terrain[-3])
+        for i in range(len(self.terrain.terrain[-3])-1):
+            if i == 0 or i == len(self.terrain.terrain[-3])-1:
+                continue
+            self.current_smooth_river[i] = np.mean([self.terrain.terrain[-3][cell_mean].height_of_water for cell_mean in [i-1, i, i+1]])
+
+
+
+
+        
+
         self.in_out_difference = self.current_water_in - self.current_water_out
-        print("water_cells_num", self.water_cells_num,"num_of_outgoing_brenches", self.num_of_outgoing_brenches,"in_out_difference",self.in_out_difference)
+        # print("water_cells_num", self.water_cells_num,"num_of_outgoing_brenches", self.num_of_outgoing_brenches,"in_out_difference",self.in_out_difference)
 
 
     def gather_statistics(self):
@@ -65,6 +82,7 @@ class Model(object):
         self.water_in.append(self.current_water_in)
         self.total_water.append(self.get_total_water())
         self.total_peat.append(self.get_total_peat())
+        self.smooth_river.append(self.current_smooth_river)
         self.terrain_timeline.append(self.terrain.get_summary())
     
     def run(self, dump_to_file=True):
@@ -202,6 +220,7 @@ class Model(object):
             'rho': self.rho,
             'mu': self.mu,
             'peat_timeline': self.total_peat,
+            'river_timeline': self.smooth_river,
             'water_timeline': self.total_water,
             'water_in_timeline': self.water_in,
             'water_out_timeline': self.water_out,

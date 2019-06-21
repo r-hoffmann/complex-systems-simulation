@@ -59,6 +59,9 @@ class TerrainPlotter(object):
 
     def plot_all_heights(self):
         for t, timestep in enumerate(self.data['terrain_timeline']):
+            
+
+
             concentration_of_nutrients = []
             peat_heights = []
             water_heights = []
@@ -78,6 +81,12 @@ class TerrainPlotter(object):
             concentration_of_nutrients = np.array(concentration_of_nutrients)
             peat_heights = np.array(peat_heights)
             water_heights = np.array(water_heights)
+            print()
+            print(len(self.data['river_timeline']))
+            print(len(self.data['terrain_timeline']))
+
+            river_smooth = self.data['river_timeline'][t]
+            print(river_smooth)
 
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
@@ -87,9 +96,9 @@ class TerrainPlotter(object):
             norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
 
             cmap_water = mpl.cm.Blues
-            norm_water = mpl.colors.Normalize(vmin=0, vmax=.5)
+            norm_water = mpl.colors.Normalize(vmin=0, vmax=.01)
                                                 
-            fig, (ax1, ax2, ax3) = plt.subplots(figsize=(12, 3), ncols=3)
+            fig, (ax1, ax2, ax3, ax4) = plt.subplots(figsize=(16, 3), ncols=4)
 
             ax1.set_title('Concentration of nutrients')
             pos1 = ax1.imshow(concentration_of_nutrients, interpolation='nearest', cmap=cmap_terrain, norm=norm_terrain)
@@ -102,6 +111,9 @@ class TerrainPlotter(object):
             ax3.set_title('Height of water')
             pos3 = ax3.imshow(water_heights, interpolation='nearest', cmap=cmap_water, norm=norm_water)
             fig.colorbar(pos3, ax=ax3)
+
+            ax4.set_title('smooth river')
+            ax4.bar(np.arange(len(river_smooth)),river_smooth, align='edge')
 
             if self.save_to_filesystem:
                 plt.savefig('images/{:05}.png'.format(t))
