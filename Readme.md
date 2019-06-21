@@ -16,6 +16,7 @@ Code for the course complex system simulation at the UvA 2018-2019.
     "generator_parameters": {
         "roughness": 0.10
     },
-    "timesteps": 100
+    "timesteps": 100,
+    "timestep_per_statistics": 10
 }
 ```
