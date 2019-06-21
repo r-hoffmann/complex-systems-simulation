@@ -1,6 +1,7 @@
 import json
 from Terrain import Terrain
 import numpy as np
+from Settlement import Settlement
 
 class Model(object):
     def __init__(self, experiment=None):
@@ -31,8 +32,14 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.water_per_timestep = self.parameters['water_per_timestep']
         self.timesteps = self.parameters['timesteps']
+        self.timestep_per_statistics = self.parameters['timestep_per_statistics']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
+        self.no_of_settlements = self.parameters['no_of_settlements']
+        self.settlements = []
+
+        self.place_settlements()
+
 
     def load_configuration(self):
         with open(self.input_file) as file:
@@ -67,12 +74,6 @@ class Model(object):
             if i == 0 or i == len(self.terrain.terrain[-3])-1:
                 continue
             self.current_smooth_river[i] = np.mean([self.terrain.terrain[-3][cell_mean].height_of_water for cell_mean in [i-1, i, i+1]])
-
-
-
-
-        
-
         self.in_out_difference = self.current_water_in - self.current_water_out
         # print("water_cells_num", self.water_cells_num,"num_of_outgoing_brenches", self.num_of_outgoing_brenches,"in_out_difference",self.in_out_difference)
 
@@ -93,7 +94,7 @@ class Model(object):
 
             print("Timestep {}".format(t+1))
             self.timestep()
-            if t % 10 == 0:
+            if t % self.timestep_per_statistics == 0:
                 self.gather_statistics()
 
         summary = self.get_summary()
@@ -128,6 +129,7 @@ class Model(object):
         self.mutations = []
         self.supply_water()
         self.remove_water()
+        self.settlements_take_water()
         self.calculate_flows()
         self.update_water()
         self.output_metrics()
@@ -148,6 +150,15 @@ class Model(object):
                 'from': cell,
                 'to': None,
                 'water': cell.height_of_water
+            })
+
+    def settlements_take_water(self):
+        for settlement in self.settlements:
+            cell = self.terrain.get_cell(settlement.x, settlement.y)
+            self.mutations.append({
+                'from': cell,
+                'to': None,
+                'water': settlement.cell.height_of_water
             })
 
     def calculate_flows(self):
@@ -194,6 +205,16 @@ class Model(object):
                 cell.peat_bog_thickness += self.mu * cell.height_of_water
             else:
                 cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
+
+    def place_settlements(self):
+        print("SETTLE")
+        for i in range(self.no_of_settlements):
+            settlement = Settlement(model=self, demand=30)
+            print(settlement)
+        #     self.settlements.append(settlement)
+
+        #     # Make the cell a hole in the ground
+        #     settlement.cell.height_of_terrain -= settlement.demand
 
     def get_total_water(self):
         total_water = 0

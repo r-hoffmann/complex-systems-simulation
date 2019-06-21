@@ -59,9 +59,6 @@ class TerrainPlotter(object):
 
     def plot_all_heights(self):
         for t, timestep in enumerate(self.data['terrain_timeline']):
-            
-
-
             concentration_of_nutrients = []
             peat_heights = []
             water_heights = []
