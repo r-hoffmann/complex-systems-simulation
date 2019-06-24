@@ -78,12 +78,8 @@ class TerrainPlotter(object):
             concentration_of_nutrients = np.array(concentration_of_nutrients)
             peat_heights = np.array(peat_heights)
             water_heights = np.array(water_heights)
-            print()
-            print(len(self.data['river_timeline']))
-            print(len(self.data['terrain_timeline']))
 
             river_smooth = self.data['river_timeline'][t]
-            print(river_smooth)
 
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
@@ -110,7 +106,7 @@ class TerrainPlotter(object):
             fig.colorbar(pos3, ax=ax3)
 
             ax4.set_title('smooth river')
-            ax4.bar(np.arange(len(river_smooth)),river_smooth, align='edge')
+            ax4.bar(np.arange(len(river_smooth)),river_smooth, align='edge',facecolor='steelblue', edgecolor='steelblue')
 
             if self.save_to_filesystem:
                 plt.savefig('images/{:05}.png'.format(t))
