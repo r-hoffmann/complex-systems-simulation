@@ -7,9 +7,7 @@ class Settlement(object):
             raise Exception('Settlement has no demand')
         self.demand = demand
         if x == None and y == None:
-            print("x0y0")
-            # self.x, self.y = self.get_place()
-            self.get_place()
+            self.get_positions()
         else:
             self.x = x
             self.y = y
@@ -18,51 +16,36 @@ class Settlement(object):
     def cell(self):
         return self.model.terrain.get_cell(self.x, self.y)
     
-    def get_place(self, placement_type='center'):
-        print("GET PLACE")
-
+    def get_positions(self, placement_type='center'):
         # Get all cells in bin
         positions = self.model.terrain.terrain[(self.bin-1)*10:self.bin*10]
-
-        print(positions[5][0].height_of_water)
-        positions[5][0].height_of_water = 1
-        print(positions[5][0].height_of_water)
 
         # Get positions of first water cell from both the left and right side in each row
         possible_positions = []
 
         for row in positions:
-            print(row)
-            
             # get position left side, and corresponding waterheight
-            for cell in row:
+            for i, cell in enumerate(row):
                 if cell.height_of_water > 0:
-                    possible_positions.append((cell, cell.height_of_water))
-
+                    settlement_cell = row[i-1]
+                    possible_positions.append((settlement_cell, cell.height_of_water))
                     # Should stop this for loop if water is found, continue to next row
                     break
-                else:
-                    continue
             
             # get position right side, and corresponding waterheight
-            for cell in row[::-1]:
+            for i, cell in enumerate(row[::-1]):
                 if cell.height_of_water > 0:
-                    possible_positions.append((cell, cell.height_of_water))
-                    break
-                else:
-                    continue                
+                    settlement_cell = row[len(row)-i]
+                    possible_positions.append((settlement_cell, cell.height_of_water))
+                    break           
 
-            # @todo: place_settlement() for no_of_settlements; 
-            # Sort positions on left column, take top position, remove positions in the neighborhood from [possible_positions]
-            # Repeat
+        assert len(possible_positions)!=0,"No place for settlement"
 
-            
+        possible_positions.sort(key=lambda x: x[1])
 
-        # if placement_type == 'center':
-        #     self.x, self.y =int(self.model.terrain.width / 2), int(self.model.terrain.height / 2)
-        # elif placement_type == 'deepest_point':
-        #     raise NotImplementedError
-        # elif placement_type == 'default':
-        #     # Something smart
-        #     raise NotImplementedError
-        # return x, y
+        selected_cell, _ = possible_positions[0]
+
+        self.x, self.y = selected_cell.x, selected_cell.y
+
+    def __repr__(self):
+        return str("({}, {}) {}".format(self.x, self.y, self.demand))

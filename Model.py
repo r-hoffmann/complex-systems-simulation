@@ -48,6 +48,7 @@ class Model(object):
     def init_statistics(self):
         self.water_out = []
         self.water_in = []
+        self.settlements_water_out = []
         self.smooth_river = [[0]*self.parameters['width']]
         self.total_water = [self.get_total_water()]
         self.total_peat = [self.get_total_peat()]
@@ -81,6 +82,7 @@ class Model(object):
     def gather_statistics(self):
         self.water_out.append(self.current_water_out)
         self.water_in.append(self.current_water_in)
+        self.settlements_water_out.append(self.current_settlements_water_out)
         self.total_water.append(self.get_total_water())
         self.total_peat.append(self.get_total_peat())
         self.smooth_river.append(self.current_smooth_river)
@@ -91,6 +93,7 @@ class Model(object):
         for t in range(self.timesteps):
             self.current_water_out = 0
             self.current_water_in = 0
+            self.current_settlements_water_out = 0
 
             print("Timestep {}".format(t+1))
             self.timestep()
@@ -111,6 +114,7 @@ class Model(object):
             t += 1
             self.current_water_out = 0
             self.current_water_in = 0
+            self.current_settlements_water_out = 0
 
             print("Timestep {}".format(t))
             self.timestep()
@@ -157,7 +161,7 @@ class Model(object):
             cell = self.terrain.get_cell(settlement.x, settlement.y)
             self.mutations.append({
                 'from': cell,
-                'to': None,
+                'to': 'settlement',
                 'water': settlement.cell.height_of_water
             })
 
@@ -177,12 +181,14 @@ class Model(object):
                     mutation['from'].height_of_water -= mutation['water']
                 else:
                     self.current_water_in += mutation['water']
-                if mutation['to'] != None:
+                if mutation['to'] == None:
+                    self.current_water_out += mutation['water']
+                elif mutation['to'] == 'settlement':
+                    self.current_settlements_water_out += mutation['water']
+                else:
                     mutation['to'].height_of_water += mutation['water']
                     if mutation['to'].y > self.max_depth:
                         self.max_depth = mutation['to'].y
-                else:
-                    self.current_water_out += mutation['water']
                 mutated += 1
         print("Ran {} water mutations, max depth {}.".format(mutated, self.max_depth))
 
@@ -210,11 +216,11 @@ class Model(object):
         print("SETTLE")
         for i in range(self.no_of_settlements):
             settlement = Settlement(model=self, demand=30)
-            print(settlement)
-        #     self.settlements.append(settlement)
+            print(settlement.x, settlement.y)
+            self.settlements.append(settlement)
 
-        #     # Make the cell a hole in the ground
-        #     settlement.cell.height_of_terrain -= settlement.demand
+            # Make the cell a hole in the ground
+            settlement.cell.height_of_terrain -= settlement.demand
 
     def get_total_water(self):
         total_water = 0
