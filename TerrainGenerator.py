@@ -70,15 +70,6 @@ class HillGrid:
         for _ in range(self.ITER):
             self.step()
 
-    def dump(self):
-        for ele in self.grid:
-            s = ''
-            for alo in ele:
-                s += '%s ' % str(alo)
-
-            plt.imshow(self.grid,interpolation='nearest')
-            plt.show()
-
     def __getitem__(self,n):
         return self.grid[n]
 
@@ -91,7 +82,6 @@ class HillGrid:
 
         for x in range(self.SIZE):
             for y in range(self.SIZE):
-
                 z = (radius**2) - ( math.pow(x2-x,2) + math.pow(y2-y,2) )
                 if z >= 0:
                     self.grid[x][y] += int(z)
@@ -101,18 +91,6 @@ class Grid(object):
         self.size_x = x
         self.size_y = y
         self.data = [[0 for _ in range(x)] for _ in range(y)]
-
-    def _render_to_text(self):
-        print('\n\n')
-        for row in self.data:
-            print([int(n) for n in row])
-
-    def _render_to_colormap(self):
-        plt.imshow(self.data, interpolation='nearest')
-        plt.show()
-
-    def render(self):
-        self._render_to_colormap()
 
     def make(self,coordinate,value):
         self.data[int(coordinate.x)][int(coordinate.y)] = value
