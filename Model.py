@@ -32,6 +32,7 @@ class Model(object):
         self.mu = self.parameters['mu']
         self.water_per_timestep = self.parameters['water_per_timestep']
         self.timesteps = self.parameters['timesteps']
+        self.number_of_water_flows = self.parameters["number_of_water_flows"]
         self.timestep_per_statistics = self.parameters['timestep_per_statistics']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
@@ -159,11 +160,14 @@ class Model(object):
         self.calculate_peat_growth()
 
     def supply_water(self):
-        self.mutations.append({
-                'from': None,
-                'to': self.terrain.terrain[0][int(self.terrain.width / 2)],
-                'water': self.water_per_timestep
-            })
+        
+        for i in range(self.number_of_water_flows):
+            self.mutations.append({
+                    'from': None,
+                    'to': self.terrain.terrain[0][int((i+1) * (self.terrain.width / (self.number_of_water_flows+1)))],
+                    'water': self.water_per_timestep/self.number_of_water_flows
+                })
+
 
     def remove_water(self):
         # @todo: Remove all water from last row?
