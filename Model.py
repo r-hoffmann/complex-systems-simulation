@@ -1,4 +1,4 @@
-import json
+import json, time
 from Terrain import Terrain
 import numpy as np
 from Settlement import Settlement
@@ -40,7 +40,9 @@ class Model(object):
         if output_file!=None:
             self.output_file = output_file
             self.load_output_file()
+            self.output_file = output_file.replace('.', '_{}.'.format(int(time.time())))
         else:
+            self.init_measures()
             self.init_statistics()
             
         self.no_of_settlements = self.parameters['no_of_settlements']
@@ -59,7 +61,13 @@ class Model(object):
             self.water_in = data['water_in_timeline']
             self.water_out = data['water_out_timeline']
             self.terrain_timeline = data['terrain_timeline']
-            self.settlements_water_out = data['settlements_water_out_timeline']
+            self.terrain.load_summary(self.terrain_timeline[-1])
+            self.settlements_water_out = []
+            self.measure_ratio_water_land = []
+            self.measure_settlement_efficiency = []
+            # self.settlements_water_out = data['settlements_water_out_timeline']
+            # self.measure_ratio_water_land = data['measure_ratio_water_land_timeline']
+            # self.measure_settlement_efficiency = data['measure_settlement_efficiency_timeline']
 
     def load_configuration(self):
         with open(self.input_file) as file:
@@ -73,6 +81,10 @@ class Model(object):
         self.total_water = [self.get_total_water()]
         self.total_peat = [self.get_total_peat()]
         self.terrain_timeline = [self.terrain.get_summary()]
+
+    def init_measures(self):
+        self.measure_ratio_water_land = []
+        self.measure_settlement_efficiency = []
 
     def output_metrics(self):
         # print(self.terrain.terrain[-1][0].height_of_water)
@@ -107,6 +119,13 @@ class Model(object):
         self.total_peat.append(self.get_total_peat())
         self.smooth_river.append(self.current_smooth_river)
         self.terrain_timeline.append(self.terrain.get_summary())
+
+    def gather_measures(self):
+        self.measure_ratio_water_land.append(self.terrain.get_ratio_water_land())
+        if len(self.settlements)==0:
+            self.measure_settlement_efficiency.append(1)
+        else:
+            self.measure_settlement_efficiency.append(self.settlements_water_out[-1] / sum([s.demand for s in self.settlements]))
     
     def run(self, dump_to_file=True):
         for t in range(self.timesteps - len(self.total_water) + 1):
@@ -118,6 +137,7 @@ class Model(object):
             self.timestep()
             if t % self.timestep_per_statistics == 0:
                 self.gather_statistics()
+                self.gather_measures()
 
         summary = self.get_summary()
         if dump_to_file:
@@ -160,14 +180,12 @@ class Model(object):
         self.calculate_peat_growth()
 
     def supply_water(self):
-        
         for i in range(self.number_of_water_flows):
             self.mutations.append({
                     'from': None,
                     'to': self.terrain.terrain[0][int((i+1) * (self.terrain.width / (self.number_of_water_flows+1)))],
                     'water': self.water_per_timestep/self.number_of_water_flows
                 })
-
 
     def remove_water(self):
         # @todo: Remove all water from last row?
@@ -235,9 +253,10 @@ class Model(object):
                 cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 
     def place_settlements(self):
-        for i in range(self.no_of_settlements):
+        for _ in range(self.no_of_settlements):
             settlement = Settlement(model=self, demand=30)
             self.settlements.append(settlement)
+            print("Placed settlement at ({}, {})".format(settlement.x, settlement.y))
 
             # Make the cell a hole in the ground
             settlement.cell.height_of_terrain -= settlement.demand
@@ -258,10 +277,8 @@ class Model(object):
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
-        print(self.total_peat)
-        print(self.total_water)
-        print(self.water_in)
-        print(self.water_out)
+        print(self.measure_ratio_water_land)
+        print(self.measure_settlement_efficiency)
         return {
             'gamma': self.gamma,
             'rho': self.rho,
@@ -272,6 +289,8 @@ class Model(object):
             'water_in_timeline': self.water_in,
             'water_out_timeline': self.water_out,
             'terrain_timeline': self.terrain_timeline,
-            'settlements_water_out_timeline': self.settlements_water_out
+            'settlements_water_out_timeline': self.settlements_water_out,
+            'measure_ratio_water_land_timeline': self.measure_ratio_water_land,
+            'measure_settlement_efficiency_timeline': self.measure_settlement_efficiency
         }
         

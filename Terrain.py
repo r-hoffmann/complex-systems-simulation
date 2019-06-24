@@ -51,8 +51,10 @@ class Terrain(object):
         # assert x == self.terrain[y][x].x and y == self.terrain[y][x].y,"Flipped x and y."
         return self.terrain[y][x]
 
+    def get_ratio_water_land(self):
+        return len([cell for cell in self.cells() if cell.height_of_water>0]) / (self.width * self.height)
+
     def get_summary(self):
-        # @todo: normalize these values?
         summary = []
         for line in self.terrain:
             summary_line = []
@@ -60,6 +62,15 @@ class Terrain(object):
                 summary_line.append(cell.get_summary())
             summary.append(summary_line)
         return summary
+
+    def load_summary(self, summary):
+        for y, line in enumerate(summary):
+            for x, cell in enumerate(line):
+                cell_object = self.get_cell(x, y)
+                cell_object.height_of_terrain = cell['terrain']
+                cell_object.height_of_water = cell['water']
+                cell_object.concentration_of_nutrients = cell['nutrients']
+                cell_object.peat_bog_thickness = cell['peat']
 
     def copy(self):
         new_terrain = Terrain(self.parameters, False)
@@ -120,7 +131,7 @@ class TerrainBlock(object):
                 'to': cell,
                 'water': average - cell.total_height
             })
-        if water_lost > self.height_of_water:
+        if water_lost > self.height_of_water and len(water_flow)>0:
             ratio_fix = self.height_of_water / water_lost
             water_flow = []
             for cell in cells_receiving_water:
