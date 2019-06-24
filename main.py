@@ -20,6 +20,7 @@ def test_each_terrain():
     assert len(pnoise2)==width and len(pnoise2[0])==height, "Something wrong with pnoise2 dimensions {}x{}!={}x{}".format(width,height,len(pnoise2),len(pnoise2[0]))
 
 if __name__ == "__main__":
+    # model = Model(output_file='output.json')
     model = Model()
     model.run()
 

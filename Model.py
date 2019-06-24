@@ -4,7 +4,7 @@ import numpy as np
 from Settlement import Settlement
 
 class Model(object):
-    def __init__(self, experiment=None):
+    def __init__(self, experiment=None, output_file=None):
         """
             dict parameters should contain the following keys:
                 height (int)
@@ -25,7 +25,7 @@ class Model(object):
         else:
             self.input_file = 'configuration.json'
             self.output_file = 'output.json'
-
+            
         self.load_configuration()
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
@@ -35,11 +35,30 @@ class Model(object):
         self.timestep_per_statistics = self.parameters['timestep_per_statistics']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
+
+        if output_file!=None:
+            self.output_file = output_file
+            self.load_output_file()
+        else:
+            self.init_statistics()
+            
         self.no_of_settlements = self.parameters['no_of_settlements']
         self.settlements = []
-
         self.place_settlements()
 
+    def load_output_file(self):
+        with open(self.output_file) as json_file:  
+            data = json.load(json_file)
+            self.gamma = data['gamma']
+            self.rho = data['rho']
+            self.mu = data['mu']
+            self.total_peat = data['peat_timeline']
+            self.smooth_river = data['river_timeline']
+            self.total_water = data['water_timeline']
+            self.water_in = data['water_in_timeline']
+            self.water_out = data['water_out_timeline']
+            self.terrain_timeline = data['terrain_timeline']
+            self.settlements_water_out = data['settlements_water_out_timeline']
 
     def load_configuration(self):
         with open(self.input_file) as file:
@@ -89,13 +108,12 @@ class Model(object):
         self.terrain_timeline.append(self.terrain.get_summary())
     
     def run(self, dump_to_file=True):
-        self.init_statistics()
-        for t in range(self.timesteps):
+        for t in range(self.timesteps - len(self.total_water) + 1):
             self.current_water_out = 0
             self.current_water_in = 0
             self.current_settlements_water_out = 0
 
-            print("Timestep {}".format(t+1))
+            print("Timestep {}".format(len(self.total_water)))
             self.timestep()
             if t % self.timestep_per_statistics == 0:
                 self.gather_statistics()
@@ -213,10 +231,8 @@ class Model(object):
                 cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 
     def place_settlements(self):
-        print("SETTLE")
         for i in range(self.no_of_settlements):
             settlement = Settlement(model=self, demand=30)
-            print(settlement.x, settlement.y)
             self.settlements.append(settlement)
 
             # Make the cell a hole in the ground
@@ -251,6 +267,7 @@ class Model(object):
             'water_timeline': self.total_water,
             'water_in_timeline': self.water_in,
             'water_out_timeline': self.water_out,
-            'terrain_timeline': self.terrain_timeline
+            'terrain_timeline': self.terrain_timeline,
+            'settlements_water_out_timeline': self.settlements_water_out
         }
         

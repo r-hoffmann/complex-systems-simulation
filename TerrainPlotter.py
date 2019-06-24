@@ -80,7 +80,7 @@ class TerrainPlotter(object):
             water_heights = np.array(water_heights)
 
             river_smooth = self.data['river_timeline'][t]
-
+            
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
             norm_terrain = mpl.colors.Normalize(vmin=0, vmax=.03)
