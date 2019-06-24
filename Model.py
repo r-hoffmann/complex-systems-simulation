@@ -34,6 +34,7 @@ class Model(object):
         self.timesteps = self.parameters['timesteps']
         self.number_of_water_flows = self.parameters["number_of_water_flows"]
         self.timestep_per_statistics = self.parameters['timestep_per_statistics']
+        self.settlement_demand = self.parameters['settlement_demand']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
 
@@ -65,9 +66,9 @@ class Model(object):
             self.settlements_water_out = []
             self.measure_ratio_water_land = []
             self.measure_settlement_efficiency = []
-            # self.settlements_water_out = data['settlements_water_out_timeline']
-            # self.measure_ratio_water_land = data['measure_ratio_water_land_timeline']
-            # self.measure_settlement_efficiency = data['measure_settlement_efficiency_timeline']
+            self.settlements_water_out = data['settlements_water_out_timeline']
+            self.measure_ratio_water_land = data['measure_ratio_water_land_timeline']
+            self.measure_settlement_efficiency = data['measure_settlement_efficiency_timeline']
 
     def load_configuration(self):
         with open(self.input_file) as file:
@@ -128,12 +129,12 @@ class Model(object):
             self.measure_settlement_efficiency.append(self.settlements_water_out[-1] / sum([s.demand for s in self.settlements]))
     
     def run(self, dump_to_file=True):
-        for t in range(self.timesteps - len(self.total_water) + 1):
+        for t in range(self.timesteps):
             self.current_water_out = 0
             self.current_water_in = 0
             self.current_settlements_water_out = 0
 
-            print("Timestep {}".format(len(self.total_water)))
+            print("Timestep {}".format(t))
             self.timestep()
             if t % self.timestep_per_statistics == 0:
                 self.gather_statistics()
@@ -253,8 +254,10 @@ class Model(object):
                 cell.peat_bog_thickness += self.rho * cell.concentration_of_nutrients
 
     def place_settlements(self):
-        for _ in range(self.no_of_settlements):
-            settlement = Settlement(model=self, demand=30)
+        for i in range(self.no_of_settlements):
+            line_number = int((i + 1) * (self.terrain.height / (self.no_of_settlements + 1)))
+            print(line_number)
+            settlement = Settlement(model=self, demand=self.settlement_demand, line_number=line_number)
             self.settlements.append(settlement)
             print("Placed settlement at ({}, {})".format(settlement.x, settlement.y))
 
