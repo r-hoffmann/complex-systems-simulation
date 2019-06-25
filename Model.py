@@ -208,7 +208,7 @@ class Model(object):
             self.mutations.append({
                 'from': cell,
                 'to': 'settlement',
-                'water': settlement.demand
+                'water': cell.height_of_water
             })
 
     def calculate_flows(self):
