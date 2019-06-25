@@ -2,6 +2,8 @@ import json, math
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
+from matplotlib import colors
+
 
 class TerrainPlotter(object):
     def __init__(self, filename='output.json', show=True, save_to_filesystem=False):
@@ -79,7 +81,6 @@ class TerrainPlotter(object):
             peat_heights = np.array(peat_heights)
             water_heights = np.array(water_heights)
 
-            river_smooth = self.data['river_timeline'][t]
             
             # make a color map of fixed colors
             cmap_terrain = mpl.cm.autumn_r
@@ -90,7 +91,7 @@ class TerrainPlotter(object):
 
             cmap_water = mpl.cm.Blues
             norm_water = mpl.colors.Normalize(vmin=0, vmax=.01)
-                                                
+            
             fig, (ax1, ax2, ax3, ax4) = plt.subplots(figsize=(16, 3), ncols=4)
 
             ax1.set_title('Concentration of nutrients')
@@ -124,6 +125,11 @@ class TerrainPlotter(object):
             measure_settlement_efficiency_timeline = self.data['measure_settlement_efficiency_timeline'][:t]
             peat_timeline = self.data['peat_timeline'][:t]
 
+            total_water_timeline = self.data['water_timeline'][:t]
+            water_in_timeline = self.data['water_in_timeline'][:t]
+            water_out_timeline = self.data['water_out_timeline'][:t]
+            river_smooth = self.data['river_timeline'][t]
+
             for row in timestep:
                 concentration_of_nutrients_line = []
                 peat_heights_line = []
@@ -150,10 +156,15 @@ class TerrainPlotter(object):
             cmap_peat = mpl.cm.Greens
             norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
 
-            cmap_water = mpl.cm.Blues
-            norm_water = mpl.colors.Normalize(vmin=0, vmax=.01)
+            # cmap_water = mpl.cm.Blues
+            # norm_water = mpl.colors.Normalize(vmin=0, vmax=.01)
                                                 
-            fig, ax = plt.subplots(figsize=(12, 6), ncols=3, nrows=2)
+            cmap_water = colors.ListedColormap(['#ffffff','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b'])
+            boundaries = [0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1]
+            # boundaries = [0, 10^-5, 10^-4, 10^-3, 10^-2, 10^-1, 1]
+            norm_water = colors.BoundaryNorm(boundaries, cmap_water.N, clip=True)
+                                                                                        
+            fig, ax = plt.subplots(figsize=(12, 6), ncols=3, nrows=3)
 
             ax[0, 0].set_title('Concentration of nutrients')
             pos1 = ax[0, 0].imshow(concentration_of_nutrients, interpolation='nearest', cmap=cmap_terrain, norm=norm_terrain)
@@ -168,7 +179,7 @@ class TerrainPlotter(object):
             fig.colorbar(pos3, ax=ax[0, 2])
 
             ax[1, 0].set_title('Ratio between water and land', y=-0.01)
-            pos1 = ax[1, 0].plot(measure_ratio_water_land_timeline)
+            pos1 = ax[1, 0].loglog(measure_ratio_water_land_timeline)
             
             ax[1, 1].set_title('Settlement efficiency', y=-0.01)
             pos2 = ax[1, 1].plot(measure_settlement_efficiency_timeline)
@@ -176,8 +187,17 @@ class TerrainPlotter(object):
             ax[1, 2].set_title('Total peat', y=-0.01)
             pos3 = ax[1, 2].plot(peat_timeline)
 
+            ax[2,0].set_title('Total Water', y=-0.01)
+            pos4 = ax[2, 0].plot(total_water_timeline)
+
+            ax[2,1].set_title('Water Flow Out of System', y=-0.01)
+            pos5 = ax[2, 1].loglog(water_out_timeline, label="out")
+
+            ax[2,2].set_title('River Distribution', y=-0.01)
+            pos6 = ax[2,2].bar(np.arange(len(river_smooth)), river_smooth, align='edge',facecolor='steelblue', edgecolor='steelblue')
+
             if self.save_to_filesystem:
-                plt.savefig('images/{:05}.png'.format(t))
+                plt.savefig('images/{:05}_2.png'.format(t))
             if self.show:
                 plt.show()
             plt.close()
