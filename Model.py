@@ -19,13 +19,14 @@ class Model(object):
                     concentration_of_nutrients
                     peat_bog_thickness)
         """
-        if experiment!=None:
+        self.experiment = experiment
+        if self.experiment!=None:
             self.input_file = 'configuration_{}.json'.format(experiment)
             self.output_file = 'output_{}.json'.format(experiment)
         else:
             self.input_file = 'configuration.json'
             self.output_file = 'output.json'
-            
+
         self.load_configuration()
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
@@ -37,21 +38,25 @@ class Model(object):
         self.settlement_demand = self.parameters['settlement_demand']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
-
-        if output_file!=None:
-            self.output_file = output_file
+        
+        if 'output_file_to_load' in self.parameters:
+            self.output_file_to_load = self.parameters['output_file_to_load']
             self.load_output_file()
-            self.output_file = output_file.replace('.', '_{}.'.format(int(time.time())))
         else:
             self.init_measures()
             self.init_statistics()
-            
+
+        if 'skip_best_settlements' in self.parameters:
+            self.skip_best_settlements = self.parameters['skip_best_settlements']
+        else:
+            self.skip_best_settlements = 0
+
         self.no_of_settlements = self.parameters['no_of_settlements']
         self.settlements = []
         self.place_settlements()
 
     def load_output_file(self):
-        with open(self.output_file) as json_file:  
+        with open('output_{}.json'.format(self.output_file_to_load)) as json_file:  
             data = json.load(json_file)
             self.gamma = data['gamma']
             self.rho = data['rho']
@@ -203,7 +208,7 @@ class Model(object):
             self.mutations.append({
                 'from': cell,
                 'to': 'settlement',
-                'water': settlement.cell.height_of_water
+                'water': settlement.demand
             })
 
     def calculate_flows(self):
@@ -256,13 +261,17 @@ class Model(object):
     def place_settlements(self):
         for i in range(self.no_of_settlements):
             line_number = int((i + 1) * (self.terrain.height / (self.no_of_settlements + 1)))
-            print(line_number)
-            settlement = Settlement(model=self, demand=self.settlement_demand, line_number=line_number)
+            settlement = Settlement(model=self, demand=self.settlement_demand, line_number=line_number, skip=self.skip_best_settlements)
             self.settlements.append(settlement)
             print("Placed settlement at ({}, {})".format(settlement.x, settlement.y))
 
             # Make the cell a hole in the ground
-            settlement.cell.height_of_terrain -= settlement.demand
+            settlement.cell.height_of_terrain = -10 * settlement.demand
+
+            # Make the hole wider
+            settlement_cell_neighbours = list(settlement.cell.neighbours())
+            for neighbour_cell in settlement_cell_neighbours:
+                neighbour_cell.height_of_terrain = -1 * settlement.demand
 
     def get_total_water(self):
         total_water = 0
