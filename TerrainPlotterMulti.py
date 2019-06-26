@@ -20,6 +20,7 @@ class TerrainPlotterMulti(object):
         self.water_in_timeline_list = []
         self.water_out_timeline_list = []
         self.river_timeline_list = []
+        self.number_of_rivers_list = []
         self.path = path_to_outputs
 
         self.flow()
@@ -43,6 +44,29 @@ class TerrainPlotterMulti(object):
         self.water_in_timeline_list.append(self.data['water_in_timeline'])
         self.water_out_timeline_list.append(self.data['water_out_timeline'])
         self.river_timeline_list.append(self.data['river_timeline'][-1])
+        self.number_of_rivers_timeline_list.append(convert_river_timeline())
+
+
+    def convert_river_timeline(self):
+        epsilon = 0.001
+        number_of_rivers_timeline = []
+        for t, timeline in enumerate(self.data['river_timeline']):
+            number_of_rivers = 0
+            binary  = [1 if water > epsilon else 0 for water in timeline]
+            for i, cell in enumerate(binary):
+                if i == 0:
+                    continue
+                else:
+                    prev_cell = binary[i-1]
+                    curr_cell = binary[i]
+
+                    if prev_cell == 1 and curr_cell == 0:
+                        number_of_rivers += 1
+            number_of_rivers_timeline.append(number_of_rivers)
+        return number_of_rivers_timeline
+            
+
+
 
 
     def plot_multiline_plots(self):
@@ -85,4 +109,4 @@ class TerrainPlotterMulti(object):
             plt.show()
 
 
-plotter = TerrainPlotterMulti(filenames=["output_1.json","output_2.json","output_3.json","output_4.json"], save_to_filesystem=True, show=False, path_to_outputs = "./Experiments/Plot_Experiment/")
+plotter = TerrainPlotterMulti(filenames=["output_21f.json"], save_to_filesystem=True, show=False, path_to_outputs = "./")
