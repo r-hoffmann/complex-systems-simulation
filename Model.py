@@ -194,7 +194,8 @@ class Model(object):
         self.evaporated_water = 0
         for cell in self.terrain.cells():
             if cell.height_of_water < self.evaporation:
-                self.evaporated_water += cell.height_of_water
+                if 0 < cell.height_of_water:
+                    self.evaporated_water += cell.height_of_water
                 cell.height_of_water = 0
 
     def settlements_take_water(self):
@@ -284,6 +285,7 @@ class Model(object):
         self.gamma = self.parameters['gamma']
         self.rho = self.parameters['rho']
         self.mu = self.parameters['mu']
+        self.settlements_summary = [settlement.summary() for settlement in self.settlements]
         print(self.measure_ratio_water_land)
         print(self.measure_settlement_efficiency)
         return {
@@ -298,6 +300,7 @@ class Model(object):
             'terrain_timeline': self.terrain_timeline,
             'settlements_water_out_timeline': self.settlements_water_out,
             'measure_ratio_water_land_timeline': self.measure_ratio_water_land,
-            'measure_settlement_efficiency_timeline': self.measure_settlement_efficiency
+            'measure_settlement_efficiency_timeline': self.measure_settlement_efficiency,
+            'settlements': self.settlements_summary
         }
         

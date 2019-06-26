@@ -26,5 +26,11 @@ class Settlement(object):
         positions_with_height.sort(key=lambda x: x[2], reverse=True)
         self.x, self.y, _ = positions_with_height[self.skip]
 
+    def summary(self):
+        return {
+                    "x": self.x,
+                    "y": self.y
+                }
+
     def __repr__(self):
         return str("({}, {}) {}".format(self.x, self.y, self.demand))
