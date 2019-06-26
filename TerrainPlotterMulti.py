@@ -20,7 +20,7 @@ class TerrainPlotterMulti(object):
         self.water_in_timeline_list = []
         self.water_out_timeline_list = []
         self.river_timeline_list = []
-        self.number_of_rivers_list = []
+        self.number_of_rivers_timeline_list = []
         self.path = path_to_outputs
 
         self.flow()
@@ -44,7 +44,7 @@ class TerrainPlotterMulti(object):
         self.water_in_timeline_list.append(self.data['water_in_timeline'])
         self.water_out_timeline_list.append(self.data['water_out_timeline'])
         self.river_timeline_list.append(self.data['river_timeline'][-1])
-        self.number_of_rivers_timeline_list.append(convert_river_timeline())
+        self.number_of_rivers_timeline_list.append(self.convert_river_timeline())
 
 
     def convert_river_timeline(self):
@@ -80,6 +80,7 @@ class TerrainPlotterMulti(object):
             water_in_timeline = self.water_in_timeline_list[i]
             water_out_timeline = self.water_out_timeline_list[i]
             river_timeline = self.river_timeline_list[i]
+            number_of_rivers_timeline = self.number_of_rivers_timeline_list[i]
 
 
             ax[0, 0].set_title('Ratio between water and land', y=-0.01)
@@ -100,7 +101,9 @@ class TerrainPlotterMulti(object):
 
             ax[1,2].set_title('River Distribution', y=-0.01)
             # pos6 = ax[1,2].bar(np.arange(len(river_smooth)), river_smooth, align='edge',facecolor='steelblue', edgecolor='steelblue')
-            pos6 = ax[1,2].plot(river_timeline)
+            # pos6 = ax[1,2].plot(river_timeline)
+            pos6 = ax[1,2].plot(number_of_rivers_timeline)
+
             
 
         if self.save_to_filesystem:
