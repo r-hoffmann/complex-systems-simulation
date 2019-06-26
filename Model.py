@@ -23,9 +23,11 @@ class Model(object):
         if self.experiment!=None:
             self.input_file = 'configuration_{}.json'.format(experiment)
             self.output_file = 'output_{}.json'.format(experiment)
+            print("Running experiment {}".format(experiment))
         else:
             self.input_file = 'configuration.json'
             self.output_file = 'output.json'
+
 
         self.load_configuration()
         self.gamma = self.parameters['gamma']

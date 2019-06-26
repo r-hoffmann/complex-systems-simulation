@@ -1,4 +1,4 @@
-import json
+import json, sys
 from Model import Model
 from TerrainPlotter import TerrainPlotter
 
@@ -21,7 +21,10 @@ def test_each_terrain():
 
 if __name__ == "__main__":
     # model = Model(output_file='output.json')
-    model = Model()
+    if len(sys.argv)>0:
+        model = Model(experiment=sys.argv[1])
+    else:
+        model = Model()
     model.run()
 
     # plotter = TerrainPlotter(filename='output.json', save_to_filesystem=True, show=False)
