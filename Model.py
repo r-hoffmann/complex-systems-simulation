@@ -69,13 +69,10 @@ class Model(object):
             self.water_in = data['water_in_timeline']
             self.water_out = data['water_out_timeline']
             self.terrain_timeline = data['terrain_timeline']
-            self.terrain.load_summary(self.terrain_timeline[-1])
-            self.settlements_water_out = []
-            self.measure_ratio_water_land = []
-            self.measure_settlement_efficiency = []
             self.settlements_water_out = data['settlements_water_out_timeline']
             self.measure_ratio_water_land = data['measure_ratio_water_land_timeline']
             self.measure_settlement_efficiency = data['measure_settlement_efficiency_timeline']
+            self.terrain.load_summary(self.terrain_timeline[-1])
 
     def load_configuration(self):
         with open(self.input_file) as file:
