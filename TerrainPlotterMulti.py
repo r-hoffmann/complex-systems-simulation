@@ -112,4 +112,5 @@ class TerrainPlotterMulti(object):
             plt.show()
 
 
-plotter = TerrainPlotterMulti(filenames=["output_21f.json"], save_to_filesystem=True, show=False, path_to_outputs = "./")
+if __name__ == "__main__":
+    plotter = TerrainPlotterMulti(filenames=["output_21f.json"], save_to_filesystem=True, show=False, path_to_outputs = "./")
