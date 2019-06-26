@@ -179,7 +179,7 @@ class TerrainPlotter(object):
             fig.colorbar(pos3, ax=ax[0, 2])
 
             ax[1, 0].set_title('Ratio between water and land', y=-0.01)
-            pos1 = ax[1, 0].loglog(measure_ratio_water_land_timeline)
+            pos1 = ax[1, 0].plot(measure_ratio_water_land_timeline)
             
             ax[1, 1].set_title('Settlement efficiency', y=-0.01)
             pos2 = ax[1, 1].plot(measure_settlement_efficiency_timeline)
@@ -191,7 +191,7 @@ class TerrainPlotter(object):
             pos4 = ax[2, 0].plot(total_water_timeline)
 
             ax[2,1].set_title('Water Flow Out of System', y=-0.01)
-            pos5 = ax[2, 1].loglog(water_out_timeline, label="out")
+            pos5 = ax[2, 1].plot(water_out_timeline, label="out")
 
             ax[2,2].set_title('River Distribution', y=-0.01)
             pos6 = ax[2,2].bar(np.arange(len(river_smooth)), river_smooth, align='edge',facecolor='steelblue', edgecolor='steelblue')
