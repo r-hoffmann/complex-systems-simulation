@@ -38,8 +38,10 @@ class Model(object):
         self.number_of_water_flows = self.parameters["number_of_water_flows"]
         self.timestep_per_statistics = self.parameters['timestep_per_statistics']
         self.settlement_demand = self.parameters['settlement_demand']
+        self.evaporation = self.parameters['evaporation']
         self.terrain = Terrain(self.parameters)
         self.max_depth = 0
+        self.evaporated_water = 0
         
         if 'output_file_to_load' in self.parameters:
             self.output_file_to_load = self.parameters['output_file_to_load']
@@ -92,30 +94,13 @@ class Model(object):
         self.measure_settlement_efficiency = []
 
     def output_metrics(self):
-        # print(self.terrain.terrain[-1][0].height_of_water)
-        # self.water_cells_num = 0
-        # previous_cell = 0
-        # previous_cell_1 = 0
-        # previous_cell_2 = 0
-
-        # # self.num_of_outgoing_brenches = 0
-        # # for cell in self.terrain.terrain[-3]:
-        # #     if cell.height_of_water>0:
-        # #         self.water_cells_num += 1
-        # #         if (previous_cell == 0 and previous_cell_1 == 0) and previous_cell_2 ==0:
-        # #             self.num_of_outgoing_brenches += 1
-        # #     previous_cell_2 = previous_cell_1
-        # #     previous_cell_1 = previous_cell
-        # #     previous_cell = cell.height_of_water
         self.current_smooth_river = [0]*len(self.terrain.terrain[-3])
         for i in range(len(self.terrain.terrain[-3])-1):
             if i == 0 or i == len(self.terrain.terrain[-3])-1:
                 continue
             self.current_smooth_river[i] = np.mean([self.terrain.terrain[-3][cell_mean].height_of_water for cell_mean in [i-1, i, i+1]])
         self.in_out_difference = self.current_water_in - self.current_water_out
-        # print("water_cells_num", self.water_cells_num,"num_of_outgoing_brenches", self.num_of_outgoing_brenches,"in_out_difference",self.in_out_difference)
-
-
+        
     def gather_statistics(self):
         self.water_out.append(self.current_water_out)
         self.water_in.append(self.current_water_in)
@@ -180,16 +165,17 @@ class Model(object):
         self.settlements_take_water()
         self.calculate_flows()
         self.update_water()
-        self.output_metrics()
+        self.evaporate_water()
         self.calculate_nutrient_dist()
         self.calculate_peat_growth()
+        self.output_metrics()
 
     def supply_water(self):
         for i in range(self.number_of_water_flows):
             self.mutations.append({
                     'from': None,
                     'to': self.terrain.terrain[0][int((i+1) * (self.terrain.width / (self.number_of_water_flows+1)))],
-                    'water': self.water_per_timestep/self.number_of_water_flows
+                    'water': (self.water_per_timestep + self.evaporated_water) / self.number_of_water_flows
                 })
 
     def remove_water(self):
@@ -200,6 +186,13 @@ class Model(object):
                 'to': None,
                 'water': cell.height_of_water
             })
+    
+    def evaporate_water(self):
+        self.evaporated_water = 0
+        for cell in self.terrain.cells():
+            if cell.height_of_water < self.evaporation:
+                self.evaporated_water += cell.height_of_water
+                cell.height_of_water = 0
 
     def settlements_take_water(self):
         for settlement in self.settlements:
