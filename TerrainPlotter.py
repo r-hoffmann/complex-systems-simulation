@@ -7,10 +7,11 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 
 class TerrainPlotter(object):
-    def __init__(self, filename='output.json', show=True, save_to_filesystem=False):
+    def __init__(self, filename='output.json', show=True, save_to_filesystem=False, experiment=None):
         self.filename = filename
         self.load_data()
         self.show = show
+        self.experiment = experiment
         self.save_to_filesystem = save_to_filesystem
         sns.set()
 
@@ -62,60 +63,69 @@ class TerrainPlotter(object):
                 plt.show()
 
     def plot_all_heights(self):
-        for t, timestep in enumerate(self.data['terrain_timeline']):
-            concentration_of_nutrients = []
-            peat_heights = []
-            water_heights = []
-            for row in timestep:
-                concentration_of_nutrients_line = []
-                peat_heights_line = []
-                water_heights_line = []
-                for cell in row:
-                    water_heights_line.append(cell['water'])
-                    concentration_of_nutrients_line.append(cell['nutrients'])
-                    peat_heights_line.append(cell['peat'])
+        with sns.axes_style('white'):
+            for t, timestep in enumerate(self.data['terrain_timeline']):
+                concentration_of_nutrients = []
+                peat_heights = []
+                water_heights = []
 
-                concentration_of_nutrients.append(concentration_of_nutrients_line)
-                peat_heights.append(peat_heights_line)
-                water_heights.append(water_heights_line)
+                for row in timestep:
+                    concentration_of_nutrients_line = []
+                    peat_heights_line = []
+                    water_heights_line = []
+                    for cell in row:
+                        water_heights_line.append(cell['water'])
+                        concentration_of_nutrients_line.append(cell['nutrients'])
+                        peat_heights_line.append(cell['peat'])
 
-            concentration_of_nutrients = np.array(concentration_of_nutrients)
-            peat_heights = np.array(peat_heights)
-            water_heights = np.array(water_heights)
+                    concentration_of_nutrients.append(concentration_of_nutrients_line)
+                    peat_heights.append(peat_heights_line)
+                    water_heights.append(water_heights_line)
 
-            
-            # make a color map of fixed colors
-            cmap_terrain = mpl.cm.autumn_r
-            norm_terrain = mpl.colors.Normalize(vmin=0, vmax=.03)
-            
-            cmap_peat = mpl.cm.Greens
-            norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
+                concentration_of_nutrients = np.array(concentration_of_nutrients)
+                peat_heights = np.array(peat_heights)
+                water_heights = np.array(water_heights)
+                # make a color map of fixed colors
+                cmap_terrain = mpl.cm.autumn_r
+                norm_terrain = mpl.colors.Normalize(vmin=0, vmax=.03)
+                
+                cmap_peat = mpl.cm.Greens
+                norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
 
-            cmap_water = mpl.cm.Blues
-            norm_water = mpl.colors.Normalize(vmin=0, vmax=.01)
-            
-            fig, (ax1, ax2, ax3, ax4) = plt.subplots(figsize=(16, 3), ncols=4)
+                # cmap_water = mpl.cm.Blues
+                # norm_water = mpl.colors.Normalize(vmin=0, vmax=.01)
+                                                    
+                cmap_water = colors.ListedColormap(['#ffffff','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b'])
+                boundaries = [0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10]
+                # boundaries = [0, 10^-5, 10^-4, 10^-3, 10^-2, 10^-1, 1]
+                norm_water = colors.BoundaryNorm(boundaries, cmap_water.N, clip=True)
+                                                                                            
+                fig, ax = plt.subplots(figsize=(12, 3), dpi=140, ncols=3)
 
-            ax1.set_title('Concentration of nutrients')
-            pos1 = ax1.imshow(concentration_of_nutrients, interpolation='bilinear', cmap=cmap_terrain, norm=norm_terrain)
-            fig.colorbar(pos1, ax=ax1)
-            
-            ax2.set_title('timestep {}\nHeight of peat'.format(t))
-            pos2 = ax2.imshow(peat_heights, interpolation='bilinear', cmap=cmap_peat, norm=norm_peat)
-            fig.colorbar(pos2, ax=ax2)
-            
-            ax3.set_title('Height of water')
-            pos3 = ax3.imshow(water_heights, interpolation='bilinear', cmap=cmap_water, norm=norm_water)
-            fig.colorbar(pos3, ax=ax3)
+                ax[0].set_title('Concentration of nutrients')
+                pos1 = ax[0].imshow(concentration_of_nutrients, interpolation='bilinear', cmap=cmap_terrain, norm=norm_terrain)
+                fig.colorbar(pos1, ax=ax[0])
+                
+                ax[1].set_title('timestep {}\nHeight of peat'.format(t))
+                pos2 = ax[1].imshow(peat_heights, interpolation='bilinear', cmap=cmap_peat, norm=norm_peat)
+                fig.colorbar(pos2, ax=ax[1])
+                
+                ax[2].set_title('Height of water')
+                pos3 = ax[2].imshow(water_heights, interpolation='bilinear', cmap=cmap_water, norm=norm_water)
+                if t > 99:
+                    for settlement in self.data['settlements']:
+                        ax[2].scatter(settlement['x'], settlement['y'], color='red', marker="^", s=40)
+                    
+                fig.colorbar(pos3, ax=ax[2])
 
-            ax4.set_title('smooth river')
-            ax4.bar(np.arange(len(river_smooth)),river_smooth, align='edge',facecolor='steelblue', edgecolor='steelblue')
-
-            if self.save_to_filesystem:
-                plt.savefig('images/{:05}.png'.format(t))
-            if self.show:
-                plt.show()
-            plt.close()
+                if self.save_to_filesystem:
+                    if self.experiment != None:
+                        plt.savefig('images/{:05}_2{}.png'.format(t, self.experiment))
+                    else:
+                        plt.savefig('images/{:05}_2.png'.format(t))
+                if self.show:
+                    plt.show()
+                plt.close()
 
     def plot_all_heights_with_measures(self, last=False):
         if last:
@@ -185,8 +195,9 @@ class TerrainPlotter(object):
                 
                 ax[0, 2].set_title('Height of water')
                 pos3 = ax[0, 2].imshow(water_heights, interpolation='bilinear', cmap=cmap_water, norm=norm_water)
-                for settlement in self.data['settlements']:
-                    ax[0, 2].scatter(settlement.x, settlement.y, color='red')
+                if t > 99:
+                    for settlement in self.data['settlements']:
+                        ax[0, 2].scatter(settlement['x'], settlement['y'], color='red', marker="^", s=40)
                     
                 fig.colorbar(pos3, ax=ax[0, 2])
 
@@ -211,7 +222,10 @@ class TerrainPlotter(object):
                 plt.tight_layout()
 
                 if self.save_to_filesystem:
-                    plt.savefig('images/{:05}_2.png'.format(t))
+                    if self.experiment != None:
+                        plt.savefig('images/{:05}_2{}.png'.format(t, self.experiment))
+                    else:
+                        plt.savefig('images/{:05}_2.png'.format(t))
                 if self.show:
                     plt.show()
                 plt.close()
