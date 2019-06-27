@@ -185,6 +185,9 @@ class TerrainPlotter(object):
                 
                 ax[0, 2].set_title('Height of water')
                 pos3 = ax[0, 2].imshow(water_heights, interpolation='bilinear', cmap=cmap_water, norm=norm_water)
+                for settlement in self.data['settlements']:
+                    ax[0, 2].scatter(settlement.x, settlement.y, color='red')
+                    
                 fig.colorbar(pos3, ax=ax[0, 2])
 
                 ax[1, 0].set_title('Ratio between water and land', y=-0.01)
@@ -238,17 +241,17 @@ class TerrainPlotter(object):
 
         hard_terrain_heights = terrain_heights + peat_heights
 
-        all_terrain = np.zeros((100, 100))
+        all_terrain = np.zeros((len(terrain_heights[0]), len(terrain_heights[0])))
         for x, row in enumerate(water_heights):
             for y, water in enumerate(row):
                 if water > 0:
                     all_terrain[x][y] = water + hard_terrain_heights[x][y]
                 else:
-                    all_terrain[x][y] = hard_terrain_heights[x][y] - 0.1
+                    all_terrain[x][y] = hard_terrain_heights[x][y] - 0.5
     
         # make a color map of fixed colors
         cmap_terrain = mpl.cm.Greens_r
-        norm_terrain = mpl.colors.Normalize(vmin=0, vmax=10)
+        norm_terrain = mpl.colors.Normalize(vmin=0, vmax=hard_terrain_heights.max()*1.1)
                                             
         cmap_water = colors.ListedColormap(['#ffffff','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b'])
         boundaries = [0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1]
@@ -260,7 +263,7 @@ class TerrainPlotter(object):
 
         fig3D = plt.figure()
         ax1 = Axes3D(fig3D)
-        ax1.view_init(elev=15, azim=45)
+        ax1.view_init(elev=25, azim=90)
         ax1.contourf(X, Y, hard_terrain_heights, 1000, cmap=cmap_terrain, norm=norm_terrain)
         ax1.contourf(X, Y, all_terrain, 1000, cmap=cmap_water, norm=norm_water)
 
