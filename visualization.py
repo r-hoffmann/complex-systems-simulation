@@ -7,4 +7,4 @@ if __name__ == "__main__":
     else:
         plotter = TerrainPlotter(filename='output_6.json', save_to_filesystem=True, show=True)
 
-    plotter.plot_all_heights_with_measures(last=True)
+    plotter.plot_all_heights_with_measures()

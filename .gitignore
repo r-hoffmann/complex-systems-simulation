@@ -1,5 +1,6 @@
 __pycache__/*
 images/*
+eye_candy/*
 /*.json
 *.pyc
 *.log
