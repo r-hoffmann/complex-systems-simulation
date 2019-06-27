@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
 from matplotlib import colors
-
+from mpl_toolkits.mplot3d import Axes3D
 
 class TerrainPlotter(object):
     def __init__(self, filename='output.json', show=True, save_to_filesystem=False):
@@ -202,7 +202,7 @@ class TerrainPlotter(object):
                 plt.show()
             plt.close()
 
-    def plot_last_heights(self):
+    def plot_3d(self):
         timestep = self.data['terrain_timeline'][-1]
         t = len(self.data['terrain_timeline'])-1
         terrain_heights = []
@@ -228,48 +228,30 @@ class TerrainPlotter(object):
         hard_terrain_heights = terrain_heights + peat_heights
 
         all_terrain = np.zeros((100, 100))
-        print(all_terrain.shape)
         for x, row in enumerate(water_heights):
             for y, water in enumerate(row):
                 if water > 0:
                     all_terrain[x][y] = water + hard_terrain_heights[x][y]
                 else:
-                    all_terrain[x][y] = hard_terrain_heights[x][y] - 0.5
-        
-        print(all_terrain.shape)
-
-                
-            
-
+                    all_terrain[x][y] = hard_terrain_heights[x][y] - 0.1
+    
         # make a color map of fixed colors
-        cmap_terrain = mpl.cm.autumn_r
-        norm_terrain = mpl.colors.Normalize(vmin=terrain_heights.min(), vmax=terrain_heights.max())
-        
-        # cmap_peat = mpl.cm.Greens
-        # norm_peat = mpl.colors.Normalize(vmin=peat_heights.min(), vmax=peat_heights.max())
-
-        # cmap_water = mpl.cm.Blues
-        # norm_water = mpl.colors.Normalize(vmin=0, vmax=.5)
-
-
-        # fig3D, (ax1, ax2, ax3) = plt.subplots(figsize=(12, 3), ncols=3)
-
         cmap_terrain = mpl.cm.Greens_r
-        norm_terrain = mpl.colors.Normalize(vmin=hard_terrain_heights.min(), vmax=hard_terrain_heights.max())
-        
-        cmap_water_all_terrain = mpl.cm.Blues
-        norm_water_all_terrain = mpl.colors.Normalize(vmin=0, vmax=5)
+        norm_terrain = mpl.colors.Normalize(vmin=0, vmax=10)
+                                            
+        cmap_water = colors.ListedColormap(['#ffffff','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b'])
+        boundaries = [0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1]
+        # boundaries = [0, 10^-5, 10^-4, 10^-3, 10^-2, 10^-1, 1]
+        norm_water = colors.BoundaryNorm(boundaries, cmap_water.N, clip=True)
 
         X = np.arange(0,100)
         Y = np.arange(0,100)
-        Z = hard_terrain_heights
-        Z_water = all_terrain
 
         fig3D = plt.figure()
         ax1 = Axes3D(fig3D)
-        ax1.view_init(elev=10, azim=110)
-        ax1.contour3D(X, Y, Z, 1000, cmap=cmap_terrain)
-        ax1.contour3D(X, Y, Z_water, 1000, c=water_heights, cmap=cmap_water_all_terrain, norm=norm_water_all_terrain)
+        ax1.view_init(elev=15, azim=45)
+        ax1.contourf(X, Y, hard_terrain_heights, 1000, cmap=cmap_terrain, norm=norm_terrain)
+        ax1.contourf(X, Y, all_terrain, 1000, cmap=cmap_water, norm=norm_water)
 
 
 
@@ -278,7 +260,7 @@ class TerrainPlotter(object):
 
         ax1.set_title('3D Terrain Visualization')
         ax1.grid(False)
-        ax1.set_zlim3d(0, 50)
+        ax1.set_zlim3d(0, 100)
 
         # ax2 = plt.axes(projection='3d')
         # ax2.contour3D(np.arange(0,100), np.arange(0,100), peat_heights, 50, cmap=cmap_peat)

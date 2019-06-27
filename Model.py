@@ -102,10 +102,9 @@ class Model(object):
             if i == 0 or i == len(self.terrain.terrain[-3])-1:
                 continue
             self.current_smooth_river[i] = np.mean([self.terrain.terrain[-3][cell_mean].height_of_water for cell_mean in [i-1, i, i+1]])
-        self.in_out_difference = self.current_water_in - self.current_water_out
         
     def gather_statistics(self):
-        self.water_out.append(self.current_water_out)
+        self.water_out.append(max(0, self.current_water_out))
         self.water_in.append(self.current_water_in)
         self.settlements_water_out.append(self.current_settlements_water_out)
         self.total_water.append(self.get_total_water())
@@ -139,27 +138,6 @@ class Model(object):
                 json.dump(summary, file)
         return summary
 
-    def run_untill_other_side(self, timesteps=10, dump_to_file=True):
-        self.init_statistics()
-        t = 0
-        while self.max_depth < 99:
-            t += 1
-            self.current_water_out = 0
-            self.current_water_in = 0
-            self.current_settlements_water_out = 0
-
-            print("Timestep {}".format(t))
-            self.timestep()
-
-            self.gather_statistics()
-
-        summary = self.get_summary()
-        if dump_to_file:
-            with open(self.output_file, 'w') as file:
-                print("Output to {}".format(self.output_file))
-                json.dump(summary, file)
-        return summary
-
     def timestep(self):
         # Directly from paper
         self.mutations = []
@@ -176,19 +154,20 @@ class Model(object):
     def supply_water(self):
         for i in range(self.number_of_water_flows):
             self.mutations.append({
-                    'from': None,
-                    'to': self.terrain.terrain[0][int((i+1) * (self.terrain.width / (self.number_of_water_flows+1)))],
-                    'water': (self.water_per_timestep + self.evaporated_water) / self.number_of_water_flows
-                })
+                'from': None,
+                'to': self.terrain.terrain[0][int((i+1) * (self.terrain.width / (self.number_of_water_flows+1)))],
+                'water': (self.water_per_timestep + self.evaporated_water) / self.number_of_water_flows
+            })
 
     def remove_water(self):
         # @todo: Remove all water from last row?
         for cell in self.terrain.terrain[-1]:
-            self.mutations.append({
-                'from': cell,
-                'to': None,
-                'water': cell.height_of_water
-            })
+            if cell.height_of_water != 0:
+                self.mutations.append({
+                    'from': cell,
+                    'to': None,
+                    'water': cell.height_of_water
+                })
     
     def evaporate_water(self):
         self.evaporated_water = 0
@@ -196,6 +175,8 @@ class Model(object):
             if cell.height_of_water < self.evaporation:
                 if 0 < cell.height_of_water:
                     self.evaporated_water += cell.height_of_water
+                else:
+                    self.current_water_out += cell.height_of_water
                 cell.height_of_water = 0
 
     def settlements_take_water(self):

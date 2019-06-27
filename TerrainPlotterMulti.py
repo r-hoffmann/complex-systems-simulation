@@ -1,12 +1,9 @@
-import json, math
+import json, os, math
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
 from matplotlib import colors
-import os
-
-
-
+import seaborn as sns
 
 class TerrainPlotterMulti(object):
     def __init__(self, filenames, show=True, save_to_filesystem=False, path_to_outputs= "./Experiments/Plot_Experiment/"):
@@ -22,9 +19,10 @@ class TerrainPlotterMulti(object):
         self.river_timeline_list = []
         self.number_of_rivers_timeline_list = []
         self.path = path_to_outputs
-
+        sns.set()
         self.flow()
-        self.plot_multiline_plots()
+        with sns.axes_style("whitegrid"):
+            self.plot_multiline_plots()
 
     def flow(self):
         for filename in self.filenames:
@@ -64,17 +62,12 @@ class TerrainPlotterMulti(object):
                         number_of_rivers += 1
             number_of_rivers_timeline.append(number_of_rivers)
         return number_of_rivers_timeline
-            
-
-
-
 
     def plot_multiline_plots(self):
         fig, ax = plt.subplots(figsize=(12, 6), ncols=3, nrows=2)
         for i in range(len(self.filenames)):
-
             measure_ratio_water_land_timeline = self.measure_ratio_water_land_timeline_list[i]
-            measure_settlement_efficiency_timeline = self.measure_settlement_efficiency_timeline_list[i]
+            measure_settlement_efficiency_timeline = [x if x!=0 else 1 for x in self.measure_settlement_efficiency_timeline_list[i]]
             peat_timeline = self.peat_timeline_list[i]
             total_water_timeline = self.total_water_timeline_list[i]
             water_in_timeline = self.water_in_timeline_list[i]
@@ -90,7 +83,7 @@ class TerrainPlotterMulti(object):
             pos2 = ax[0, 1].plot(measure_settlement_efficiency_timeline)
             
             ax[0, 2].set_title('Total peat', y=-0.01)
-            pos3 = ax[0, 2].plot(peat_timeline)
+            pos3 = ax[0, 2].plot(peat_timeline, label="{} settlements".format(i))
 
             ax[1,0].set_title('Total Water', y=-0.01)
             pos4 = ax[1, 0].plot(total_water_timeline)
@@ -104,7 +97,9 @@ class TerrainPlotterMulti(object):
             # pos6 = ax[1,2].plot(river_timeline)
             pos6 = ax[1,2].plot(number_of_rivers_timeline)
 
-            
+        handles, labels = ax[0, 2].get_legend_handles_labels()
+        fig.legend(handles, labels, loc='center right')
+        plt.tight_layout(rect=[0.05, 0.06, 0.87, 0.97])
 
         if self.save_to_filesystem:
             plt.savefig('Final_Images/multi_line_plot.png')
