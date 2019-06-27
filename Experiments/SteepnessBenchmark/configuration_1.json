@@ -9,8 +9,12 @@
     "water_per_timestep": 1,
     "generator_type": "pnoise2",
     "generator_parameters": {
-        "roughness": 0.1
+        "roughness": 1
     },
-    "timesteps": 1000
+    "timesteps": 1000,
+    "timestep_per_statistics": 10,
+    "no_of_settlements": 0,
+    "settlement_demand": 0.5,
+    "number_of_water_flows": 1,
+    "evaporation": 0.00001
 }
-
