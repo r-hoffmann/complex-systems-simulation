@@ -279,3 +279,66 @@ class TerrainPlotter(object):
         if self.save_to_filesystem:
             plt.savefig('images/{:05}.png'.format(t))
         plt.show()
+
+    def plot_eye_candy(self):
+        # make a color map of fixed colors
+        cmap_terrain = mpl.cm.Greens_r
+        norm_terrain = mpl.colors.Normalize(vmin=0, vmax=10)
+                                            
+        cmap_water = colors.ListedColormap(['#ffffff','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b'])
+        boundaries = [0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1]
+        norm_water = colors.BoundaryNorm(boundaries, cmap_water.N, clip=True)
+
+        X = np.arange(0, len(self.data['terrain_timeline'][0][0]))
+        Y = np.arange(0, len(self.data['terrain_timeline'][0]))
+        for t, timestep in enumerate(self.data['terrain_timeline']):
+            terrain_heights = []
+            peat_heights = []
+            water_heights = []
+            for row in timestep:
+                terrain_heights_line = []
+                peat_heights_line = []
+                water_heights_line = []
+                for cell in row:
+                    terrain_heights_line.append(cell['terrain'])
+                    peat_heights_line.append(cell['peat'])
+                    water_heights_line.append(cell['water'])
+
+                terrain_heights.append(terrain_heights_line)
+                peat_heights.append(peat_heights_line)
+                water_heights.append(water_heights_line)
+
+            terrain_heights = np.array(terrain_heights)
+            peat_heights = np.array(peat_heights)
+            water_heights = np.array(water_heights)
+
+            hard_terrain_heights = terrain_heights + peat_heights
+
+            all_terrain = np.zeros((100, 100))
+            for x, row in enumerate(water_heights):
+                for y, water in enumerate(row):
+                    if water > 0:
+                        all_terrain[x][y] = water + hard_terrain_heights[x][y]
+                    else:
+                        all_terrain[x][y] = hard_terrain_heights[x][y] - 0.1
+
+            fig3D = plt.figure()
+            ax1 = Axes3D(fig3D)
+            if t < 135 - 45:
+                azim = 45 + t
+            elif t < 2 * (135 - 45):
+                azim = 135 - t
+            elif t < 3 * (135 - 45):
+                t %= 90
+                azim = 45 + t
+            print(azim)
+            ax1.view_init(elev=15, azim=azim)
+            ax1.contourf(X, Y, hard_terrain_heights, 1000, cmap=cmap_terrain, norm=norm_terrain)
+            ax1.contourf(X, Y, all_terrain, 1000, cmap=cmap_water, norm=norm_water)
+
+            ax1.set_title('3D Terrain Visualization')
+            ax1.grid(False)
+            ax1.set_zlim3d(0, 100)
+
+            if self.save_to_filesystem:
+                plt.savefig('eye_candy/{:05}.png'.format(t))
