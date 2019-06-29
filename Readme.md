@@ -71,10 +71,10 @@ The general way to run an experiment is by generating a configuration file and s
 ```bash
 ./main.py experiment1 && ./output_to_gif.sh experiment1 
 ```
-the simulation will run and output ./output_experiment1.json. Additionally a GIF will be generated and saved as ./images/animated_experiment1.gif if ffmpeg is installed on the system.
+the simulation will run and output `output_experiment1.json`. Additionally a GIF will be generated and saved as `images/animated_experiment1.gif` if ffmpeg is installed on the system.
 
 ## Notes
-The ./Experiments directory contains most of the experiments which we have ran throughout the course. Every sub-directory will contain configuration files along with GIFs, the number should correspond. Please note that replicating these experiments may yield different results since the experiment might have been ran with an older version of the code.
+The `Experiments` directory contains most of the experiments which we have ran throughout the course. Every sub-directory will contain configuration files along with GIFs, the number should correspond. Please note that replicating these experiments may yield different results since the experiment might have been ran with an older version of the code.
 
 ## Running an Example
 On Unix-like systems the `./example_run.sh` will automatically generate a configuration file, run the simulations, generate the images and convert them into a GIF. The images can be found in the `images` directory and the GIF should be identical to the GIF in the `example` directory. Possibly you need to run `chmod +x example_run.sh` first to make the script executable.
