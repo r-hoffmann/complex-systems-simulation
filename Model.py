@@ -139,7 +139,6 @@ class Model(object):
         return summary
 
     def timestep(self):
-        # Directly from paper
         self.mutations = []
         self.supply_water()
         self.remove_water()
