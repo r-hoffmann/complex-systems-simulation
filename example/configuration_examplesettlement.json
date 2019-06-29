@@ -1,4 +1,5 @@
 {
+    "output_file_to_load": "example",
     "height": 100,
     "width": 100,
     "slope": 0.5,
@@ -13,7 +14,7 @@
     },
     "timesteps": 300,
     "timestep_per_statistics": 10,
-    "no_of_settlements": 0,
+    "no_of_settlements": 3,
     "settlement_demand": 0.5,
     "number_of_water_flows": 1,
     "evaporation": 0.00001

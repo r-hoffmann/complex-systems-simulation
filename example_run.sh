@@ -1,5 +1,6 @@
-cp ./example/configuration_example.json ./configuration_example.json
+cp ./example/configuration_*.json ./
 python3 main.py example
-python3 visualization.py example
-ffmpeg -i images/%05d_2example.png -vf palettegen -y images/paletteexample.png
-ffmpeg -framerate 100 -i images/%05d_2example.png -i images/paletteexample.png -lavfi "paletteuse,setpts=6*PTS" -y images/animated_example.gif 
+python3 main.py examplesettlement
+python3 visualization.py examplesettlement
+ffmpeg -i images/%05d_2examplesettlement.png -vf palettegen -y images/paletteexamplesettlement.png
+ffmpeg -framerate 100 -i images/%05d_2examplesettlement.png -i images/paletteexamplesettlement.png -lavfi "paletteuse,setpts=6*PTS" -y images/animated_examplesettlement.gif 

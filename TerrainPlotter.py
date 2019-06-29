@@ -112,7 +112,7 @@ class TerrainPlotter(object):
                 
                 ax[2].set_title('Height of water')
                 pos3 = ax[2].imshow(water_heights, interpolation='bilinear', cmap=cmap_water, norm=norm_water)
-                if t > 99:
+                if t > len(self.data['terrain_timeline']) / 2 - 1:
                     for settlement in self.data['settlements']:
                         ax[2].scatter(settlement['x'], settlement['y'], color='red', marker="^", s=40)
                     
@@ -195,7 +195,7 @@ class TerrainPlotter(object):
                 
                 ax[0, 2].set_title('Height of water')
                 pos3 = ax[0, 2].imshow(water_heights, interpolation='bilinear', cmap=cmap_water, norm=norm_water)
-                if t > 99:
+                if t > len(the_data) / 2 - 1:
                     for settlement in self.data['settlements']:
                         ax[0, 2].scatter(settlement['x'], settlement['y'], color='red', marker="^", s=40)
                     
